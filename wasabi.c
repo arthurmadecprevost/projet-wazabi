@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 #include "carte.c"
 #include "de.c"
 #include "init.c"
@@ -56,6 +57,11 @@ void piocher_carte(TJoueur * leJoueur, TPioche  pioche);
 // **********************
 int main ()
 {
+    int nb;
+    srand(time(NULL));
+
+    nb = nombre_aleatoire(1,10);
+    printf(" %d \n", nb);
     
     return 0;
 }
@@ -72,5 +78,9 @@ int saisir_entre(int min, int max){
 }
 
 int nombre_aleatoire(int min, int max){
-    return 0;
+    int nbMystere;
+
+    nbMystere = (rand() % (max-min - 1)) + min;
+
+    return nbMystere;
 }
