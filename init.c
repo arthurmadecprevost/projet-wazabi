@@ -1,4 +1,4 @@
-//Procédure qui va prendre numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
+//Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
 void piocher_carte(_TJoueur * leJoueur, _TPioche pioche){
     int numCarte = nombre_aleatoire(0,pioche.nbCarteRestante); //numéro de la carte à piocher dans le tableau 
     int laCarte ;
@@ -8,9 +8,9 @@ void piocher_carte(_TJoueur * leJoueur, _TPioche pioche){
     while((i<35) && !trouve){
         int compteur = 0; //On va augmenter la valeur de compteur quand on compte une carte toujours présente dans la pioche donc dont la valeur n'est pas égal à -1
         if(pioche.tabPioche[i]!= -1){
-            compteur = compteur+1;
+            compteur = compteur + 1;
         }
-        if (compteur == numCarte){
+        if(compteur == numCarte){
             laCarte = pioche.tabPioche[i];
             trouve = true;
         }
@@ -89,5 +89,4 @@ void piocher_carte(_TJoueur * leJoueur, _TPioche pioche){
             }
         }
     }
-
 }

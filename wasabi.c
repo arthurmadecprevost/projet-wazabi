@@ -3,10 +3,10 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
-#include "carte.c"
-#include "de.c"
-#include "init.c"
-#include "game.c"
+#include "carte.h"
+#include "de.h"
+#include "init.h"
+#include "game.h"
 
 // ************************************
 // definition des types : liste chainee 
@@ -50,7 +50,6 @@ typedef struct TJoueur
 // **********************
 int saisir_entre(int min, int max); 
 int nombre_aleatoire(int min, int max);
-void piocher_carte(TJoueur * leJoueur, TPioche  pioche);
 
 // **********************
 //  programme principal
@@ -76,7 +75,7 @@ int saisir_entre(int min, int max){
 
     return choix;
 }
-
+// fonction qui retourne un nombre aléatoire compris entre deux nombres
 int nombre_aleatoire(int min, int max){
     int nbMystere;
 
