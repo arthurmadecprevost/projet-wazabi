@@ -111,58 +111,69 @@ void piocher_carte(TJoueur * leJoueur, TPioche pioche){
         }
     }
 
+    char carte1[75] = "Supprimez 1 de vos des ";
+    char carte2[75] ="Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite. ";
+    char carte3[75] ="Supprimez 2 de vos des ";
+    char carte4[75] ="Donnez 1 de vos des au joueur de votre choix ";
+    char carte5[75] ="Prenez 1 carte au joueur de votre choix ";
+    char carte6[75] ="Le joueur de votre choix n’a plus qu’1 carte ";
+    char carte7[75] ="Piochez 3 cartes dans la pioche ";
+    char carte8[75] ="Tous les joueurs sauf vous n’ont plus que 2 cartes";
+    char carte9[75] ="Le joueur de votre choix passe son tour";
+    char carte10[75] ="Rejouez et changez de sens ";
+
     TCarte * newCarte;
     newCarte = (TCarte*) malloc(sizeof(TCarte));
     switch (laCarte)
     {
     case 1:
         (*newCarte).cout=1;
-        (*newCarte).libelle[75] = "Supprimez 1 de vos des";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=1;
         break;
     case 2:
         (*newCarte).cout=2;
-        //(*newCarte).libelle[75]= "Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite. ";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=2;
         break;
     case 3:
         (*newCarte).cout=3;
-        //(*newCarte).libelle[75]= "Supprimez 2 de vos des ";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=3;
         break;
     case 4:
         (*newCarte).cout=3;
-       // (*newCarte).libelle[75]= "Donnez 1 de vos des au joueur de votre choix ";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=4;
         break;
     case 5:
         (*newCarte).cout=1;
-      //  (*newCarte).libelle[75]= "Prenez 1 carte au joueur de votre choix ";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=5;
         break;
     case 6:
         (*newCarte).cout=1;
-       // (*newCarte).libelle[75]= "Le joueur de votre choix n’a plus qu’1 carte ";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=6;
         break;
     case 7:
         (*newCarte).cout=1;
-      //  (*newCarte).libelle[75]= "Piochez 3 cartes dans la pioche ";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=7;
         break;
     case 8:
         (*newCarte).cout=2;
-      //  (*newCarte).libelle[75]= "Tous les joueurs sauf vous n’ont plus que 2 cartes";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=8;
         break;
     case 9:
         (*newCarte).cout=0;
-      //  (*newCarte).libelle[75]= "Le joueur de votre choix passe son tour";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=9;
         break;
     case 10:
         (*newCarte).cout=0;
-        //(*newCarte).libelle[75]= "Rejouez et changez de sens ";
+        strcpy((*newCarte).libelle,carte1);
         (*newCarte).effet=10;
         break;
     default:
