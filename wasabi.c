@@ -87,6 +87,13 @@ int nombre_aleatoire(int min, int max){
     return nbMystere;
 }
 
+void init_pioche(_TPioche pioche){
+    int tabPioche[36] = {1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
+
+    (*pioche).nombre_carte = 36;
+    (*pioche).tabPioche = tabPioche;
+}
+
 void piocher_carte(TJoueur * leJoueur, TPioche pioche){
     int numCarte = nombre_aleatoire(0,pioche.nbCarteRestante); //numéro de la carte à piocher dans le tableau 
     int laCarte ;
@@ -110,7 +117,7 @@ void piocher_carte(TJoueur * leJoueur, TPioche pioche){
     {
     case 1:
         (*newCarte).cout=1;
-        //(*newCarte).libelle[75]= "Supprimez 1 de vos des ";
+        (*newCarte).libelle[75] = "Supprimez 1 de vos des";
         (*newCarte).effet=1;
         break;
     case 2:
