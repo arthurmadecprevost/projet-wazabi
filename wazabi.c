@@ -87,7 +87,7 @@ int nombre_aleatoire(int min, int max){
     return nbMystere;
 }
 
-void init_pioche(_TPioche pioche){
+void init_pioche(TPioche pioche){
     int tabPioche[36] = {1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
 
     (*pioche).nombre_carte = 36;
