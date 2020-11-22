@@ -97,7 +97,8 @@ void init_pioche(TPioche * pioche){
 void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
     TCarte * newCarte;
     newCarte = (*pioche).sommet;
-
+    (*pioche).sommet = (*newCarte).carteSuivante;
+    
     TCarte * aux;
 
     
@@ -117,6 +118,9 @@ void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
             aux =(*aux).carteSuivante;
         }
     }
+    (*newCarte).carteSuivante = NULL;
+
+
     // char carte1[75] = "Supprimez 1 de vos des ";
     // char carte2[75] ="Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite. ";
     // char carte3[75] ="Supprimez 2 de vos des ";
