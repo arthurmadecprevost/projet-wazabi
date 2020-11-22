@@ -4,26 +4,24 @@
 #include <stdbool.h>
 #include <time.h>
 //#include "carte.h"
-//#include "init.h"
+//#include "init.c"
 //#include "de.h"
 //#include "game.h"
 
 // ************************************
 // definition des types : liste chainee 
 // ************************************
-typedef struct _TPioche
-{
-    int nbCarteRestante;
-    int tabPioche[36];
-} TPioche;
-
 typedef struct _TCarte
 {
-    char libelle[75];
-    int cout;
-    int effet;
+    int identifiant;
     struct _TCarte * carteSuivante;
 } TCarte;
+
+typedef struct _TPioche
+{
+    int nbCarte;
+    TCarte * dernierElement;
+} TPioche;
 
 typedef struct _TDe
 {
@@ -50,8 +48,13 @@ typedef struct _TJoueur
 // **********************
 int saisir_entre(int min, int max); 
 int nombre_aleatoire(int min, int max);
-void piocher_carte(TJoueur * leJoueur, TPioche pioche); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
+void piocher_carte(TJoueur * leJoueur, TPioche * pioche); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
 void init_de(TJoueur * leJoueur);// Procédure qui va donner 4 dés à un joueur et initialiser leur valeur à -1
+void afficher_les_joueurs(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3);//procédure qui afficher tous les joueurs à l'écran
+void afficher_lancer(TJoueur * leJoueur);// procédure qui affiche les dés d'un joueur
+void echange_de(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3);// Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
+void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
+
 
 
 // **********************
@@ -87,99 +90,20 @@ int nombre_aleatoire(int min, int max){
     return nbMystere;
 }
 
-void init_pioche(_TPioche pioche){
+void init_pioche(TPioche * pioche){
     int tabPioche[36] = {1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
 
-    (*pioche).nombre_carte = 36;
-    (*pioche).tabPioche = tabPioche;
+    (*pioche).nbCarteRestante = 36;
+    (*pioche).tabPioche[36] = tabPioche;
 }
 
-void piocher_carte(TJoueur * leJoueur, TPioche pioche){
-    int numCarte = nombre_aleatoire(0,pioche.nbCarteRestante); //numéro de la carte à piocher dans le tableau 
-    int laCarte ;
-    int i =0; //utiliser pour parcourir le tableau
-    bool trouve = false;
-    
-    while((i<35) && !trouve){
-        int compteur = 0; //On va augmenter la valeur de compteur quand on compte une carte toujours présente dans la pioche donc dont la valeur n'est pas égal à -1
-        if(pioche.tabPioche[i]!= -1){
-            compteur = compteur + 1;
-        }
-        if(compteur == numCarte){
-            laCarte = pioche.tabPioche[i];
-            trouve = true;
-        }
-    }
-
-    char carte1[75] = "Supprimez 1 de vos des ";
-    char carte2[75] ="Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite. ";
-    char carte3[75] ="Supprimez 2 de vos des ";
-    char carte4[75] ="Donnez 1 de vos des au joueur de votre choix ";
-    char carte5[75] ="Prenez 1 carte au joueur de votre choix ";
-    char carte6[75] ="Le joueur de votre choix n’a plus qu’1 carte ";
-    char carte7[75] ="Piochez 3 cartes dans la pioche ";
-    char carte8[75] ="Tous les joueurs sauf vous n’ont plus que 2 cartes";
-    char carte9[75] ="Le joueur de votre choix passe son tour";
-    char carte10[75] ="Rejouez et changez de sens ";
-
+void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
     TCarte * newCarte;
-    newCarte = (TCarte*) malloc(sizeof(TCarte));
-    switch (laCarte)
-    {
-    case 1:
-        (*newCarte).cout=1;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=1;
-        break;
-    case 2:
-        (*newCarte).cout=2;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=2;
-        break;
-    case 3:
-        (*newCarte).cout=3;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=3;
-        break;
-    case 4:
-        (*newCarte).cout=3;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=4;
-        break;
-    case 5:
-        (*newCarte).cout=1;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=5;
-        break;
-    case 6:
-        (*newCarte).cout=1;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=6;
-        break;
-    case 7:
-        (*newCarte).cout=1;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=7;
-        break;
-    case 8:
-        (*newCarte).cout=2;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=8;
-        break;
-    case 9:
-        (*newCarte).cout=0;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=9;
-        break;
-    case 10:
-        (*newCarte).cout=0;
-        strcpy((*newCarte).libelle,carte1);
-        (*newCarte).effet=10;
-        break;
-    default:
-        break;
-    }
+    newCarte = (*pioche).dernierElement;
 
+    TCarte * aux;
+
+    
     (*newCarte).carteSuivante=NULL;
 
     TCarte * aux;
@@ -196,10 +120,89 @@ void piocher_carte(TJoueur * leJoueur, TPioche pioche){
             aux =(*aux).carteSuivante;
         }
     }
+    // char carte1[75] = "Supprimez 1 de vos des ";
+    // char carte2[75] ="Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite. ";
+    // char carte3[75] ="Supprimez 2 de vos des ";
+    // char carte4[75] ="Donnez 1 de vos des au joueur de votre choix ";
+    // char carte5[75] ="Prenez 1 carte au joueur de votre choix ";
+    // char carte6[75] ="Le joueur de votre choix n’a plus qu’1 carte ";
+    // char carte7[75] ="Piochez 3 cartes dans la pioche ";
+    // char carte8[75] ="Tous les joueurs sauf vous n’ont plus que 2 cartes";
+    // char carte9[75] ="Le joueur de votre choix passe son tour";
+    // char carte10[75] ="Rejouez et changez de sens ";
+
 }
 
 void init_de(TJoueur * leJoueur){
     for(int i =0; i<4;i++){
         nouveau_de(leJoueur);
+    }
+}
+
+void afficher_les_joueurs(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3){
+    afficher_joueur(leJoueur1);
+    afficher_joueur(leJoueur2);
+    afficher_joueur(leJoueur3);
+}
+
+void afficher_lancer(TJoueur * leJoueur){
+    TDe * aux;
+    aux = (TDe*) malloc(sizeof(TDe));
+    int valeurDe;
+
+    printf("Voici vos dés : ");
+
+    aux = (*leJoueur).des;
+    while(aux != NULL){
+        valeurDe = (*aux).valeur;
+        switch (valeurDe)
+        {
+        case 1:
+            printf("Wasabi");
+            break;
+        case 2:
+            printf("Donner dé");
+            break;
+        case 3:
+            printf("Piocher carte");
+            break;
+        default:
+            break;
+        }
+        printf(" - ");
+        aux=(*aux).deSuivant;
+    }
+}
+
+void echange_de(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3){
+    printf("Dans quelle sens voulez vous tournez les dés ? (0 pour sens horaire, 1 pour sens anti horaire)\n ");
+    int sens = saisir_entre(0,1);
+    int de1 = nombre_de(leJoueur1);
+    int de2 = nombre_de(leJoueur2);
+    int de3 = nombre_de(leJoueur3);
+    int dif = 0;
+
+    if(sens){
+        egaliser_de(leJoueur1,de1,de3);
+        egaliser_de(leJoueur2,de2,de1);
+        egaliser_de(leJoueur3,de3,de2);
+    }else{
+        egaliser_de(leJoueur1,de1,de2);
+        egaliser_de(leJoueur2,de2,de3);
+        egaliser_de(leJoueur3,de3,de1);    
+    }
+
+}
+
+void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau){
+    int nbDeAct = nbDeDeb;
+    while (nbDeAct != nbDeNouveau){
+        if(nbDeAct>nbDeNouveau){
+            supprimer_de(leJoueur);
+            nbDeAct = nbDeAct -1;
+        }else{
+            nouveau_de(leJoueur);
+            nbDeAct = nbDeAct +1;
+        }
     }
 }
