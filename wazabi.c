@@ -203,3 +203,7 @@ void init_de(TJoueur * leJoueur){
         nouveau_de(leJoueur);
     }
 }
+
+int nombre_des(TJoueur leJoueur){
+    
+}
