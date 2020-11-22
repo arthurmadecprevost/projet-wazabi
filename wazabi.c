@@ -19,8 +19,7 @@ typedef struct _TCarte
 
 typedef struct _TPioche
 {
-    int nbCarte;
-    TCarte * dernierElement;
+    TCarte * sommet;
 } TPioche;
 
 typedef struct _TDe
@@ -39,8 +38,6 @@ typedef struct _TJoueur
     struct TJoueur * joueurSuiv;
     bool joue;	
 } TJoueur;
-
-
 
 
 // **********************
@@ -99,7 +96,7 @@ void init_pioche(TPioche * pioche){
 
 void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
     TCarte * newCarte;
-    newCarte = (*pioche).dernierElement;
+    newCarte = (*pioche).sommet;
 
     TCarte * aux;
 
@@ -209,4 +206,38 @@ void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau){
 
 int nombre_des(TJoueur leJoueur){
     
+}
+
+void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
+    int valeur = 0;
+    int nbCarteDef = 0;
+    int parcours =1;
+
+    TCarte * aux;
+    TCarte * prec;
+
+    aux = (*laDefausse).sommet;
+    while(aux != NULL){
+        nbCarteDef = nbCarteDef+1;
+        aux = (*aux).carteSuivante;
+    }
+
+    while((*laDefausse).sommet != NULL){
+        aux = (*laDefausse).sommet;
+
+        valeur = nombre_aleatoire(1,nbCarteDef);
+        while(parcours != valeur){
+            prec = aux;
+            aux = (*aux).carteSuivante;
+            valeur = valeur +1;
+        }
+        (*prec).carteSuivante=(*aux).carteSuivante;
+        if((*laPioche).sommet==NULL){
+            (*laPioche).sommet = aux;
+            (*aux).carteSuivante = NULL;
+        }else{
+            (*aux).carteSuivante = (*laPioche).sommet;
+            (*laPioche).sommet = aux;
+        }
+    }
 }
