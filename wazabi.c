@@ -45,13 +45,15 @@ typedef struct _TJoueur
 // **********************
 int saisir_entre(int min, int max); 
 int nombre_aleatoire(int min, int max);
+
 void piocher_carte(TJoueur * leJoueur, TPioche * pioche); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
 void init_de(TJoueur * leJoueur);// Procédure qui va donner 4 dés à un joueur et initialiser leur valeur à -1
 void afficher_les_joueurs(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3);//procédure qui afficher tous les joueurs à l'écran
 void afficher_lancer(TJoueur * leJoueur);// procédure qui affiche les dés d'un joueur
 void echange_de(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3);// Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
 void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
-
+void init_pioche(TPioche * pioche); // Initialisation de la pioche.
+int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 
 
 // **********************
@@ -240,4 +242,5 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
             (*laPioche).sommet = aux;
         }
     }
+
 }
