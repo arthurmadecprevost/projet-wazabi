@@ -94,7 +94,7 @@ void init_pioche(TPioche * pioche){
     int tabPioche[36] = {1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
 
     (*pioche).nbCarteRestante = 36;
-    (*pioche).tabPioche[36] = tabPioche;
+    (*pioche).tabPioche = tabPioche;
 }
 
 void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
@@ -205,4 +205,8 @@ void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau){
             nbDeAct = nbDeAct +1;
         }
     }
+}
+
+int nombre_des(TJoueur leJoueur){
+    
 }
