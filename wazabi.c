@@ -50,8 +50,10 @@ typedef struct _TJoueur
 // **********************
 int saisir_entre(int min, int max); 
 int nombre_aleatoire(int min, int max);
-void piocher_carte(TJoueur * leJoueur, TPioche pioche); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
+void init_pioche(TPioche * pioche); // Initialisation de la pioche.
+void piocher_carte(TJoueur * leJoueur, TPioche pioche); // Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs.
 void init_de(TJoueur * leJoueur);// Procédure qui va donner 4 dés à un joueur et initialiser leur valeur à -1
+int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 
 
 // **********************
@@ -205,5 +207,5 @@ void init_de(TJoueur * leJoueur){
 }
 
 int nombre_des(TJoueur leJoueur){
-    
+
 }
