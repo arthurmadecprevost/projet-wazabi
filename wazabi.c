@@ -17,6 +17,11 @@ typedef struct _TCarte
     struct _TCarte * carteSuivante;
 } TCarte;
 
+typedef struct DefCarte{
+    char libelle[75];
+    int nbWasabi;
+} DefCarte;
+
 typedef struct _TPioche
 {
     TCarte * sommet;
@@ -54,7 +59,7 @@ void echange_de(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3);// 
 void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
 void init_pioche(TPioche * pioche); // Initialisation de la pioche.
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
-
+void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
 
 // **********************
 //  programme principal
@@ -63,6 +68,9 @@ int main ()
 {
     int nb;
     srand(time(NULL));
+
+    //Le tableau d'enregistrement des cartes 
+    DefCarte tabCarte[10];
 
     nb = nombre_aleatoire(1,10);
     printf(" %d \n", nb);    
@@ -124,7 +132,7 @@ void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
 
 
     // char carte1[75] = "Supprimez 1 de vos des ";
-    // char carte2[75] ="Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite. ";
+    // char carte2[75] ="Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite ";
     // char carte3[75] ="Supprimez 2 de vos des ";
     // char carte4[75] ="Donnez 1 de vos des au joueur de votre choix ";
     // char carte5[75] ="Prenez 1 carte au joueur de votre choix ";
@@ -247,4 +255,8 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
         }
     }
 
+}
+
+void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
+    printf("Nombre de wasabi : %d : %s ",tabCarte[(*laCarte).identifiant].nbWasabi,tabCarte[(*laCarte).identifiant].libelle);
 }
