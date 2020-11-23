@@ -39,8 +39,8 @@ typedef struct _TJoueur
     char pseudo[25];
     TCarte *  cartes;
     TDe * des;
-    struct TJoueur * joueurPrec;
-    struct TJoueur * joueurSuiv;
+    struct _TJoueur * joueurPrec;
+    struct _TJoueur * joueurSuiv;
     bool joue;	
 } TJoueur;
 
@@ -117,7 +117,6 @@ void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
     
     (*newCarte).carteSuivante=NULL;
 
-    TCarte * aux;
 
     if((*leJoueur).cartes==NULL){
         (*leJoueur).cartes = newCarte;
