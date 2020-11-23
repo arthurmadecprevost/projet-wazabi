@@ -62,6 +62,7 @@ int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du 
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
 void defausser_carte(TCarte * laCarte, TJoueur * leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
 void tour_suivant( TJoueur * leJoueur,bool sens); //procédure qui va changer le joueur actuel
+void init_tabCarte(DefCarte tabCarte[10]); //procédure qui va initialiser le tableau de définitions des cartes
 
 
 // **********************
@@ -74,6 +75,10 @@ int main ()
 
     //Le tableau d'enregistrement des cartes 
     DefCarte tabCarte[10];
+
+    TJoueur * unJoueur;
+    
+
 
     nb = nombre_aleatoire(1,10);
     printf(" %d \n", nb);    
@@ -131,19 +136,6 @@ void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
         }
     }
     (*newCarte).carteSuivante = NULL;
-
-
-    // char carte1[75] = "Supprimez 1 de vos des ";
-    // char carte2[75] ="Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite ";
-    // char carte3[75] ="Supprimez 2 de vos des ";
-    // char carte4[75] ="Donnez 1 de vos des au joueur de votre choix ";
-    // char carte5[75] ="Prenez 1 carte au joueur de votre choix ";
-    // char carte6[75] ="Le joueur de votre choix n’a plus qu’1 carte ";
-    // char carte7[75] ="Piochez 3 cartes dans la pioche ";
-    // char carte8[75] ="Tous les joueurs sauf vous n’ont plus que 2 cartes";
-    // char carte9[75] ="Le joueur de votre choix passe son tour";
-    // char carte10[75] ="Rejouez et changez de sens ";
-
 }
 
 void init_de(TJoueur * leJoueur){
@@ -297,4 +289,28 @@ void tour_suivant(TJoueur * leJoueur,bool sens){
         nouveauJ = (*leJoueur).joueurPrec;
         (*nouveauJ).joue = true;
     }
+}
+
+void init_tabCarte(DefCarte tabCarte[10]){
+    tabCarte[0].libelle[75] = "Supprimez 1 de vos des ";
+    tabCarte[1].libelle[75] = "Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite ";
+    tabCarte[2].libelle[75] = "Supprimez 2 de vos des ";
+    tabCarte[3].libelle[75] = "Donnez 1 de vos des au joueur de votre choix ";
+    tabCarte[4].libelle[75] = "Prenez 1 carte au joueur de votre choix ";
+    tabCarte[5].libelle[75] = "Le joueur de votre choix n’a plus qu’1 carte ";
+    tabCarte[6].libelle[75] = "Piochez 3 cartes dans la pioche ";
+    tabCarte[7].libelle[75] = "Tous les joueurs sauf vous n’ont plus que 2 cartes";
+    tabCarte[8].libelle[75] = "Le joueur de votre choix passe son tour";
+    tabCarte[9].libelle[75] = "Rejouez et changez de sens ";
+   
+    tabCarte[0].nbWasabi = 1;
+    tabCarte[0].nbWasabi = 2;
+    tabCarte[0].nbWasabi = 3;
+    tabCarte[0].nbWasabi = 3;
+    tabCarte[0].nbWasabi = 1;
+    tabCarte[0].nbWasabi = 1;
+    tabCarte[0].nbWasabi = 1;
+    tabCarte[0].nbWasabi = 2;
+    tabCarte[0].nbWasabi = 0;
+    tabCarte[0].nbWasabi = 0;
 }
