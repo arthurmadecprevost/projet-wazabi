@@ -61,7 +61,7 @@ void init_pioche(TPioche * pioche); // Initialisation de la pioche.
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
 void defausser_carte(TCarte * laCarte, TJoueur * leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
-
+void tour_suivant( TJoueur * leJoueur,bool sens); //procédure qui va changer le joueur actuel
 
 
 // **********************
@@ -284,5 +284,18 @@ void defausser_carte(TCarte * laCarte, TJoueur * leJoueur, TPioche * defausse){
         premier = false;
         prec= aux;
         aux=(*aux).carteSuivante;
+    }
+}
+
+void tour_suivant(TJoueur * leJoueur,bool sens){
+    (*leJoueur).joue = false;
+    TJoueur * nouveauJ;
+
+    if(sens){
+        nouveauJ = (*leJoueur).joueurSuiv;
+        (*nouveauJ).joue = true;
+    }else{
+        nouveauJ = (*leJoueur).joueurPrec;
+        (*nouveauJ).joue = true;
     }
 }
