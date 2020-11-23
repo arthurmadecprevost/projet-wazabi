@@ -246,6 +246,12 @@ void ajout_joueur(TListeJoueur * listeJoueur, int numJoueur, TPioche * pioche){
             aux = (*aux).joueurSuiv;
         }
         (*aux).joueurSuiv = newJoueur;
+        (*newJoueur).joueurPrec = aux;
+        if(numJoueur == 3) //Si c'est le dernier joueur alors il pointe vers le 1er et inversement
+        {
+            (*newJoueur).joueurSuiv = (*listeJoueur).debut;
+            (*listeJoueur).debut->joueurPrec = newJoueur;
+        }
     }
 }
 void init_partie(TListeJoueur * listeJoueur, TPioche * pioche){
