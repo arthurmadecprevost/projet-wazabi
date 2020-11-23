@@ -17,10 +17,14 @@ typedef struct _TCarte
     struct _TCarte * carteSuivante;
 } TCarte;
 
+typedef struct DefCarte{
+    char libelle[75];
+    int nbWasabi;
+} DefCarte;
+
 typedef struct _TPioche
 {
-    int nbCarte;
-    TCarte * dernierElement;
+    TCarte * sommet;
 } TPioche;
 
 typedef struct _TDe
@@ -44,8 +48,6 @@ typedef struct _TListeJoueur
     TJoueur * debut; //Liste des joueurs
 }TListeJoueur;
 
-
-
 // **********************
 //  prototypes des fonctions
 // **********************
@@ -61,6 +63,9 @@ void init_pioche(TPioche * pioche); // Initialisation de la pioche.
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 void init_partie(TListeJoueur * listeJoueur, TPioche * pioche); // Procédure qui initialise les dés, les cartes ainsi que le pseudo d’un joueur
 void ajout_joueur(TListeJoueur * listeJoueur,int numJoueur, TPioche * pioche); //Procédure qui ajoute un joueur à la liste des joueurs  
+void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
+void defausser_carte(TCarte * laCarte, TJoueur * leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
+void tour_suivant( TJoueur * leJoueur,bool sens); //procédure qui va changer le joueur actuel
 
 // **********************
 //  programme principal
@@ -71,9 +76,9 @@ int main ()
     TListeJoueur *listeJoueur;
     TPioche *pioche;
     srand(time(NULL));
-
     init_partie(listeJoueur,pioche);   
-
+    //Le tableau d'enregistrement des cartes 
+    DefCarte tabCarte[10];
     return 0;
 }
 
@@ -105,14 +110,14 @@ void init_pioche(TPioche * pioche){
 
 void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
     TCarte * newCarte;
-    newCarte = (*pioche).dernierElement;
-
+    newCarte = (*pioche).sommet;
+    (*pioche).sommet = (*newCarte).carteSuivante;
+    
     TCarte * aux;
 
     
     (*newCarte).carteSuivante=NULL;
 
-    TCarte * aux;
 
     if((*leJoueur).cartes==NULL){
         (*leJoueur).cartes = newCarte;
@@ -126,8 +131,11 @@ void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
             aux =(*aux).carteSuivante;
         }
     }
+    (*newCarte).carteSuivante = NULL;
+
+
     // char carte1[75] = "Supprimez 1 de vos des ";
-    // char carte2[75] ="Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite. ";
+    // char carte2[75] ="Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite ";
     // char carte3[75] ="Supprimez 2 de vos des ";
     // char carte4[75] ="Donnez 1 de vos des au joueur de votre choix ";
     // char carte5[75] ="Prenez 1 carte au joueur de votre choix ";
@@ -214,7 +222,13 @@ void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau){
 }
 
 int nombre_des(TJoueur leJoueur){
+    
+}
 
+void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
+    int valeur = 0;
+    int nbCarteDef = 0;
+    int parcours =1;
 }
 //Procédure qui ajoute un joueur à la partie
 void ajout_joueur(TListeJoueur * listeJoueur, int numJoueur, TPioche * pioche){ 
@@ -262,3 +276,74 @@ void init_partie(TListeJoueur * listeJoueur, TPioche * pioche){
         ajout_joueur(listeJoueur,i,pioche);
     }
 } 
+
+    TCarte * aux;
+    TCarte * prec;
+
+    aux = (*laDefausse).sommet;
+    while(aux != NULL){
+        nbCarteDef = nbCarteDef+1;
+        aux = (*aux).carteSuivante;
+    }
+
+    while((*laDefausse).sommet != NULL){
+        aux = (*laDefausse).sommet;
+
+        valeur = nombre_aleatoire(1,nbCarteDef);
+        while(parcours != valeur){
+            prec = aux;
+            aux = (*aux).carteSuivante;
+            valeur = valeur +1;
+        }
+        (*prec).carteSuivante=(*aux).carteSuivante;
+        if((*laPioche).sommet==NULL){
+            (*laPioche).sommet = aux;
+            (*aux).carteSuivante = NULL;
+        }else{
+            (*aux).carteSuivante = (*laPioche).sommet;
+            (*laPioche).sommet = aux;
+        }
+    }
+
+}
+
+void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
+    printf("Nombre de wasabi : %d : %s ",tabCarte[(*laCarte).identifiant].nbWasabi,tabCarte[(*laCarte).identifiant].libelle);
+}
+
+void defausser_carte(TCarte * laCarte, TJoueur * leJoueur, TPioche * defausse){
+    bool supprimer = false;
+    bool premier = true;
+    TCarte * aux;
+    TCarte * prec;
+
+    aux = (*leJoueur).cartes;
+    prec = aux;
+    while (aux != NULL && !supprimer){
+        if((*aux).identifiant == (*laCarte).identifiant){
+            if(premier){
+                (*leJoueur).cartes=(*aux).carteSuivante; 
+            }
+            (*prec).carteSuivante=(*aux).carteSuivante;
+            (*aux).carteSuivante = (*defausse).sommet;
+            (*defausse).sommet = aux;
+        }
+        premier = false;
+        prec= aux;
+        aux=(*aux).carteSuivante;
+    }
+}
+
+void tour_suivant(TJoueur * leJoueur,bool sens){
+    (*leJoueur).joue = false;
+    TJoueur * nouveauJ;
+
+    if(sens){
+        nouveauJ = (*leJoueur).joueurSuiv;
+        (*nouveauJ).joue = true;
+    }else{
+        nouveauJ = (*leJoueur).joueurPrec;
+        (*nouveauJ).joue = true;
+    }
+}
+
