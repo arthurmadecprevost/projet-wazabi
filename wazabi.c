@@ -31,15 +31,18 @@ typedef struct _TDe
 
 typedef struct _TJoueur
 {
-	int id;
-    char pseudo[25];
-    TCarte *  cartes;
-    TDe * des;
-    struct TJoueur * joueurPrec;
-    struct TJoueur * joueurSuiv;
-    bool joue;	
+	int id;  //Numéro du joueur
+    char pseudo[25]; //Pseudo du joueur
+    TCarte * cartes; //Les cartes du joueur
+    TDe * des; //Les dés du joueur
+    struct TJoueur * joueurPrec; //Le joueur précédent
+    struct TJoueur * joueurSuiv; //Le joueur suivant
+    bool joue;	//
 } TJoueur;
-
+typedef struct _TListeJoueur
+{
+    TJoueur * debut; //Liste des joueurs
+}TListeJoueur;
 
 
 
@@ -48,7 +51,6 @@ typedef struct _TJoueur
 // **********************
 int saisir_entre(int min, int max); 
 int nombre_aleatoire(int min, int max);
-
 void piocher_carte(TJoueur * leJoueur, TPioche * pioche); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
 void init_de(TJoueur * leJoueur);// Procédure qui va donner 4 dés à un joueur et initialiser leur valeur à -1
 void afficher_les_joueurs(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3);//procédure qui afficher tous les joueurs à l'écran
@@ -57,7 +59,8 @@ void echange_de(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3);// 
 void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
 void init_pioche(TPioche * pioche); // Initialisation de la pioche.
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
-
+void init_partie(TListeJoueur * listeJoueur, TPioche * pioche); // Procédure qui initialise les dés, les cartes ainsi que le pseudo d’un joueur
+void ajout_joueur(TListeJoueur * listeJoueur,int numJoueur, TPioche * pioche); //Procédure qui ajoute un joueur à la liste des joueurs  
 
 // **********************
 //  programme principal
@@ -65,10 +68,11 @@ int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du 
 int main ()
 {
     int nb;
+    TListeJoueur *listeJoueur;
+    TPioche *pioche;
     srand(time(NULL));
 
-    nb = nombre_aleatoire(1,10);
-    printf(" %d \n", nb);    
+    init_partie(listeJoueur,pioche);   
 
     return 0;
 }
@@ -95,7 +99,7 @@ int nombre_aleatoire(int min, int max){
 void init_pioche(TPioche * pioche){
     int tabPioche[36] = {1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
 
-    (*pioche).nbCarteRestante = 36;
+    (*pioche).nbCarte = 36;
     (*pioche).tabPioche = tabPioche;
 }
 
@@ -212,3 +216,43 @@ void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau){
 int nombre_des(TJoueur leJoueur){
 
 }
+//Procédure qui ajoute un joueur à la partie
+void ajout_joueur(TListeJoueur * listeJoueur, int numJoueur, TPioche * pioche){ 
+    TJoueur *newJoueur = NULL;
+    TJoueur *aux = NULL;
+
+    newJoueur = malloc(sizeof(newJoueur));
+    (*newJoueur).id = numJoueur;
+    printf("Joueur n°%d saisissez votre pseudo \n", numJoueur);
+    scanf(" %s", (*newJoueur).pseudo);
+    (*newJoueur).joue = false;
+    for(int i = 0; i < 4; i++)//initialisation des cartes du joueur
+    {
+        piocher_carte(newJoueur,pioche);
+    }
+    init_de(newJoueur);
+    (*newJoueur).joueurPrec = NULL;
+    (*newJoueur).joueurSuiv = NULL;
+
+    if((*listeJoueur).debut == NULL)//Si c'est le premier joueur
+    {
+        (*listeJoueur).debut = newJoueur;
+    } 
+    else
+    {
+        aux = (*listeJoueur).debut;
+        while ((*aux).joueurSuiv != NULL)
+        {
+            aux = (*aux).joueurSuiv;
+        }
+        (*aux).joueurSuiv = newJoueur;
+    }
+}
+void init_partie(TListeJoueur * listeJoueur, TPioche * pioche){
+    int i;
+    printf("Bienvenue dans le jeu Wazabi");
+    for(i = 0; i < 3; i++)
+    {
+        ajout_joueur(listeJoueur,i,pioche);
+    }
+} 
