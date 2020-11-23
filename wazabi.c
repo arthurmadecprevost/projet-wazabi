@@ -60,6 +60,9 @@ void egaliser_de(TJoueur * leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qu
 void init_pioche(TPioche * pioche); // Initialisation de la pioche.
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
+void defausser_carte(TCarte * laCarte, TJoueur * leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
+
+
 
 // **********************
 //  programme principal
@@ -259,4 +262,27 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
 
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
     printf("Nombre de wasabi : %d : %s ",tabCarte[(*laCarte).identifiant].nbWasabi,tabCarte[(*laCarte).identifiant].libelle);
+}
+
+void defausser_carte(TCarte * laCarte, TJoueur * leJoueur, TPioche * defausse){
+    bool supprimer = false;
+    bool premier = true;
+    TCarte * aux;
+    TCarte * prec;
+
+    aux = (*leJoueur).cartes;
+    prec = aux;
+    while (aux != NULL && !supprimer){
+        if((*aux).identifiant == (*laCarte).identifiant){
+            if(premier){
+                (*leJoueur).cartes=(*aux).carteSuivante; 
+            }
+            (*prec).carteSuivante=(*aux).carteSuivante;
+            (*aux).carteSuivante = (*defausse).sommet;
+            (*defausse).sommet = aux;
+        }
+        premier = false;
+        prec= aux;
+        aux=(*aux).carteSuivante;
+    }
 }
