@@ -32,10 +32,9 @@ typedef struct _TDe
     int valeur;
     struct _TDe * deSuivant;
 } TDe;
-
 typedef struct _TJoueur
 {
-	int id;  //Numéro du joueur
+    int id;  //Numéro du joueur
     char pseudo[25]; //Pseudo du joueur
     TCarte * cartes; //Les cartes du joueur
     TDe * des; //Les dés du joueur
@@ -68,7 +67,6 @@ void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui a
 void defausser_carte(TCarte * laCarte, TJoueur * leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
 void tour_suivant( TJoueur * leJoueur,bool sens); //procédure qui va changer le joueur actuel
 void init_tabCarte(DefCarte tabCarte[10]); //procédure qui va initialiser le tableau de définitions des cartes
-
 // **********************
 //  programme principal
 // **********************
@@ -79,7 +77,11 @@ int main ()
     TPioche *pioche;
     srand(time(NULL));
 
-
+    (*listeJoueur).debut = NULL;
+    init_partie(listeJoueur,pioche);
+    //Le tableau d'enregistrement des cartes 
+    DefCarte tabCarte[10];
+  
     //Le tableau d'enregistrement des cartes 
     DefCarte tabCarte[10];
     init_tabCarte(tabCarte);
@@ -106,7 +108,6 @@ int nombre_aleatoire(int min, int max){
 
     return nbMystere;
 }
-
 void init_pioche(TPioche * pioche, TPioche * defausse){
     int tabPioche[35] = {1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
 
@@ -129,7 +130,6 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
 
 
     melanger_carte(pioche, defausse);
-
 }
 
 void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
@@ -278,19 +278,19 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
 
 //Procédure qui ajoute un joueur à la partie
 void ajout_joueur(TListeJoueur * listeJoueur, int numJoueur, TPioche * pioche){ 
-    TJoueur *newJoueur = NULL;
-    TJoueur *aux = NULL;
+    TJoueur *newJoueur;
+    TJoueur *aux;
 
-    newJoueur = malloc(sizeof(newJoueur));
+    newJoueur = malloc(sizeof(TJoueur));
     (*newJoueur).id = numJoueur;
-    printf("Joueur n°%d saisissez votre pseudo \n", numJoueur);
+    printf("Joueur n°%d veuillez saisir votre pseudo ? \n", numJoueur + 1);
     scanf(" %s", (*newJoueur).pseudo);
     (*newJoueur).joue = false;
     for(int i = 0; i < 4; i++)//initialisation des cartes du joueur
     {
-        piocher_carte(newJoueur,pioche);
+        //piocher_carte(newJoueur,pioche);
     }
-    init_de(newJoueur);
+    //init_de(newJoueur);
     (*newJoueur).joueurPrec = NULL;
     (*newJoueur).joueurSuiv = NULL;
 
@@ -317,12 +317,16 @@ void ajout_joueur(TListeJoueur * listeJoueur, int numJoueur, TPioche * pioche){
 
 void init_partie(TListeJoueur * listeJoueur, TPioche * pioche){
     int i;
-    printf("Bienvenue dans le jeu Wazabi");
+    printf("******************************* Bienvenue dans le jeu Wazabi *************************************\n\n");
     for(i = 0; i < 3; i++)
     {
         ajout_joueur(listeJoueur,i,pioche);
     }
 } 
+void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
+    int valeur = 0;
+    int nbCarteDef = 0;
+    int parcours =1;
 
 
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
@@ -364,7 +368,6 @@ void tour_suivant(TJoueur * leJoueur,bool sens){
         (*nouveauJ).joue = true;
     }
 }
-
 void init_tabCarte(DefCarte tabCarte[10]){
     /*tabCarte[0].libelle[75] = "Supprimez 1 de vos des ";
     tabCarte[1].libelle[75] = "Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite ";
