@@ -39,10 +39,11 @@ typedef struct _TJoueur
     char pseudo[25]; //Pseudo du joueur
     TCarte * cartes; //Les cartes du joueur
     TDe * des; //Les dés du joueur
-    struct TJoueur * joueurPrec; //Le joueur précédent
-    struct TJoueur * joueurSuiv; //Le joueur suivant
+    struct TJoueur * joueurPrec; // Le joueur précédent
+    struct TJoueur * joueurSuiv; // Le joueur suivant
     bool joue;	//
 } TJoueur;
+
 typedef struct _TListeJoueur
 {
     TJoueur * debut; //Liste des joueurs
@@ -109,11 +110,35 @@ int nombre_aleatoire(int min, int max){
     return nbMystere;
 }
 
-void init_pioche(TPioche * pioche){
-    int tabPioche[36] = {1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
+typedef struct _TCarte
+{
+    int identifiant;
+    struct _TCarte * carteSuivante;
+} TCarte;
 
-    (*pioche).nbCarte = 36;
-    (*pioche).tabPioche = tabPioche;
+void init_pioche(TPioche * pioche, TPioche * defausse){
+    int tabPioche[35] = {1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
+
+
+    TCarte * firstCard;
+    firstCard = malloc(sizeof(TCarte));
+    (*firstCard).identifiant = 1;
+    (*firstCard).carteSuivante = NULL;
+    (*defausse).sommet = firstCard;
+
+    if(defausse != NULL){
+        defausse->sommet = firstCard;
+
+        while(aux != NULL){
+
+        }
+    }
+
+    defausse->sommet = aux;
+
+
+    melanger_carte(pioche, defausse);
+
 }
 
 void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
