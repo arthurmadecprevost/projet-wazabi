@@ -78,16 +78,13 @@ int main ()
     TListeJoueur *listeJoueur;
     TPioche *pioche;
     srand(time(NULL));
-    init_partie(listeJoueur,pioche);   
+
+
     //Le tableau d'enregistrement des cartes 
     DefCarte tabCarte[10];
-
-    TJoueur * unJoueur;
+    init_tabCarte(tabCarte);
+    printf("Nombre de wasabi de la 5eme carte : %d\n",tabCarte[4].nbWasabi );
     
-    nb = nombre_aleatoire(1,10);
-    printf(" %d \n", nb);    
-
-
     return 0;
 }
 
@@ -161,17 +158,19 @@ void piocher_carte(TJoueur * leJoueur, TPioche * pioche){
     (*newCarte).carteSuivante = NULL;
 }
 
+/*
 void init_de(TJoueur * leJoueur){
     for(int i =0; i<4;i++){
         nouveau_de(leJoueur);
     }
-}
+}*/
 
+/*
 void afficher_les_joueurs(TJoueur * leJoueur1,TJoueur * leJoueur2,TJoueur * leJoueur3){
     afficher_joueur(leJoueur1);
     afficher_joueur(leJoueur2);
     afficher_joueur(leJoueur3);
-}
+}*/
 
 void afficher_lancer(TJoueur * leJoueur){
     TDe * aux;
@@ -243,7 +242,40 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
     int valeur = 0;
     int nbCarteDef = 0;
     int parcours =1;
+    
+    TCarte * aux;
+    TCarte * prec;
+
+    aux = (*laDefausse).sommet;
+    while(aux != NULL){
+        nbCarteDef = nbCarteDef+1;
+        aux = (*aux).carteSuivante;
+    }
+    while((*laDefausse).sommet != NULL){
+        aux = (*laDefausse).sommet;
+        
+        valeur = nombre_aleatoire(1,nbCarteDef);
+        while(parcours != valeur){
+            prec = aux;
+            aux = (*aux).carteSuivante;
+            valeur = valeur +1;
+        }
+        if(valeur == 1){
+            (*laDefausse).sommet=(*aux).carteSuivante;
+        }else{
+            (*prec).carteSuivante=(*aux).carteSuivante;
+        }
+        if((*laPioche).sommet==NULL){
+            (*laPioche).sommet = aux;
+            (*aux).carteSuivante = NULL;
+        }else{
+            (*aux).carteSuivante = (*laPioche).sommet;
+            (*laPioche).sommet = aux;
+        }
+    }
+
 }
+
 //Procédure qui ajoute un joueur à la partie
 void ajout_joueur(TListeJoueur * listeJoueur, int numJoueur, TPioche * pioche){ 
     TJoueur *newJoueur = NULL;
@@ -282,6 +314,7 @@ void ajout_joueur(TListeJoueur * listeJoueur, int numJoueur, TPioche * pioche){
         }
     }
 }
+
 void init_partie(TListeJoueur * listeJoueur, TPioche * pioche){
     int i;
     printf("Bienvenue dans le jeu Wazabi");
@@ -291,35 +324,6 @@ void init_partie(TListeJoueur * listeJoueur, TPioche * pioche){
     }
 } 
 
-    TCarte * aux;
-    TCarte * prec;
-
-    aux = (*laDefausse).sommet;
-    while(aux != NULL){
-        nbCarteDef = nbCarteDef+1;
-        aux = (*aux).carteSuivante;
-    }
-
-    while((*laDefausse).sommet != NULL){
-        aux = (*laDefausse).sommet;
-
-        valeur = nombre_aleatoire(1,nbCarteDef);
-        while(parcours != valeur){
-            prec = aux;
-            aux = (*aux).carteSuivante;
-            valeur = valeur +1;
-        }
-        (*prec).carteSuivante=(*aux).carteSuivante;
-        if((*laPioche).sommet==NULL){
-            (*laPioche).sommet = aux;
-            (*aux).carteSuivante = NULL;
-        }else{
-            (*aux).carteSuivante = (*laPioche).sommet;
-            (*laPioche).sommet = aux;
-        }
-    }
-
-}
 
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
     printf("Nombre de wasabi : %d : %s ",tabCarte[(*laCarte).identifiant].nbWasabi,tabCarte[(*laCarte).identifiant].libelle);
@@ -362,7 +366,7 @@ void tour_suivant(TJoueur * leJoueur,bool sens){
 }
 
 void init_tabCarte(DefCarte tabCarte[10]){
-    tabCarte[0].libelle[75] = "Supprimez 1 de vos des ";
+    /*tabCarte[0].libelle[75] = "Supprimez 1 de vos des ";
     tabCarte[1].libelle[75] = "Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite ";
     tabCarte[2].libelle[75] = "Supprimez 2 de vos des ";
     tabCarte[3].libelle[75] = "Donnez 1 de vos des au joueur de votre choix ";
@@ -371,17 +375,17 @@ void init_tabCarte(DefCarte tabCarte[10]){
     tabCarte[6].libelle[75] = "Piochez 3 cartes dans la pioche ";
     tabCarte[7].libelle[75] = "Tous les joueurs sauf vous n’ont plus que 2 cartes";
     tabCarte[8].libelle[75] = "Le joueur de votre choix passe son tour";
-    tabCarte[9].libelle[75] = "Rejouez et changez de sens ";
-   
+    tabCarte[9].libelle[75] = "Rejouez et changez de sens ";*/
+  
     tabCarte[0].nbWasabi = 1;
-    tabCarte[0].nbWasabi = 2;
-    tabCarte[0].nbWasabi = 3;
-    tabCarte[0].nbWasabi = 3;
-    tabCarte[0].nbWasabi = 1;
-    tabCarte[0].nbWasabi = 1;
-    tabCarte[0].nbWasabi = 1;
-    tabCarte[0].nbWasabi = 2;
-    tabCarte[0].nbWasabi = 0;
-    tabCarte[0].nbWasabi = 0;
+    tabCarte[1].nbWasabi = 2;
+    tabCarte[2].nbWasabi = 3;
+    tabCarte[3].nbWasabi = 3;
+    tabCarte[4].nbWasabi = 1;
+    tabCarte[5].nbWasabi = 1;
+    tabCarte[6].nbWasabi = 1;
+    tabCarte[7].nbWasabi = 2;
+    tabCarte[8].nbWasabi = 0;
+    tabCarte[9].nbWasabi = 0;
 }
 
