@@ -68,6 +68,7 @@ void lancer_des(TJoueur joueur); // Procédure qui va changer la valeur des dés
 void echange_de(TJoueur tabJoueur[]);// Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
 void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
+void donner_de (TJoueur joueur1, TJoueur joueur2); // Procédure qui prend un dé du joueur1 pour le donner au joueur2
 
 TJoueur saisir_joueur(TJoueur joueurActuelle, TJoueur tabJoueur[3]);//Fonction qui va demander au joueur actuel, quel joueur séléctionner
 void tour_suivant( TJoueur leJoueur,bool sens, TJoueur tabCarte[]); //procédure qui va changer le joueur actuel
@@ -406,11 +407,18 @@ int nombre_carte(TJoueur leJoueur){
 
 // Procédure qui va changer la valeur des dés d’un joueur, 1 pour le dé  “donner dé” , 2 pour le dé “piocher carte”, 3 pour le dé “Wasabi”
 void lancer_des(TJoueur joueur){
+    TDe * aux;
+    aux = joueur.des;
 
+    do {
+        (*aux).valeur = nombre_aleatoire(1,3);
+        aux = (*aux).deSuivant;
+    } while(aux != NULL);
 }
 
 // Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
 void echange_de(TJoueur tabJoueur[]){
+
     printf("Dans quelle sens voulez vous tournez les dés ? (0 pour sens horaire, 1 pour sens anti horaire)\n ");
     int sens = saisir_entre(0,1);
     int de1 = nombre_des(tabJoueur[0]);
@@ -426,6 +434,12 @@ void echange_de(TJoueur tabJoueur[]){
         egaliser_de(tabJoueur[1],de2,de3);
         egaliser_de(tabJoueur[2],de3,de1);    
     }
+}
+
+// Procédure qui prend un dé du joueur1 pour le donner au joueur2
+void donner_de (TJoueur joueur1, TJoueur joueur2){
+    supprimer_de(joueur1);
+    nouveau_de(joueur2);
 }
 
 //Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
