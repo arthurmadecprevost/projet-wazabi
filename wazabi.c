@@ -57,6 +57,7 @@ void echange_de(TJoueur leJoueur1,TJoueur leJoueur2,TJoueur leJoueur3);// Procé
 void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
 void init_pioche(TPioche * pioche,  TPioche * defausse); // Initialisation de la pioche.
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
+int nombre_carte(TJoueur leJoueur); //Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 void init_partie(TJoueur tabJoueur[], TPioche * pioche); // Procédure qui initialise les dés, les cartes ainsi que le pseudo d’un joueur
 TJoueur nouveauJoueur(int numJoueur, TPioche * pioche); //Procédure qui ajoute un joueur à la liste des joueurs  
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
@@ -72,7 +73,7 @@ int main ()
 {
     TJoueur tabJoueur[3];
     TPioche * pioche;
-    init_partie(tabJoueur,pioche);
+    //init_partie(tabJoueur,pioche);
     return 0;
 }
 
@@ -191,12 +192,13 @@ void piocher_carte(TJoueur leJoueur, TPioche * pioche){
     }
     (*newCarte).carteSuivante = NULL;
 }
+
 /*
 void init_de(TJoueur leJoueur){
     for(int i =0; i<4;i++){
         nouveau_de(leJoueur);
     }
-}*/
+}/*
 
 
 void afficher_les_joueurs(TJoueur tabJoueur[]){
@@ -313,7 +315,7 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
     }
 
 }
-
+/*
 //Procédure qui ajoute un joueur à la partie
 TJoueur nouveauJoueur(int numJoueur, TPioche * pioche){ 
     TJoueur joueur;
@@ -328,8 +330,9 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche){
     init_de(joueur);
 
     return joueur;
-}
+}*/
 
+/*
 // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
 void afficher_joueur(TJoueur joueur){
     int i;
@@ -337,11 +340,11 @@ void afficher_joueur(TJoueur joueur){
     for(i = 0; i<24; i++){
         printf("%s",joueur.pseudo[i]);
     }
-    printf("\nNombre de cartes: %d \n", nombre_cartes(joueur));
+    printf("\nNombre de cartes: %d \n", nombre_carte(joueur));
     printf("\nNombre de dés: %d \n", nombre_des(joueur));
-}
+}/*
 
-
+/*
 void init_partie(TJoueur tabJoueur[3], TPioche * pioche){
     int i;
     printf("******************************* Bienvenue dans le jeu Wazabi *************************************\n\n");
@@ -349,7 +352,7 @@ void init_partie(TJoueur tabJoueur[3], TPioche * pioche){
     {
         tabJoueur[i] = nouveauJoueur(i,pioche);
     }
-}
+}*/
 
 int nombre_carte(TJoueur leJoueur){
     int nbCarte; //Nombre de carte 
