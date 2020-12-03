@@ -312,6 +312,11 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche){
     return joueur;
 }
 
+void afficher_joueur(TJoueur joueur){
+    
+}
+
+
 void init_partie(TJoueur tabJoueur[3], TPioche * pioche){
     int i;
     printf("******************************* Bienvenue dans le jeu Wazabi *************************************\n\n");
