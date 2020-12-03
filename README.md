@@ -34,13 +34,13 @@ Et bien sûr, un clone de ce répertoire [projet-wazabi.git](https://github.com/
 
 Pour installer le projet-wazabi sur votre ordinateur:
 ```sh
-$ git clone https://github.com/arthurmadecprevost/projet-wazabi.git
-$ cd projet-wazabi
+git clone https://github.com/arthurmadecprevost/projet-wazabi.git
+cd projet-wazabi
 ```
 Compilation du projet-wazabi et execution:
 ```sh
-$ gcc -Wall -o ./projet-wazabi ./wazabi.c
-$ ./projet-wazabi
+gcc -Wall -o ./projet-wazabi ./wazabi.c
+./projet-wazabi
 ```
 
 **Bon jeu !**
