@@ -143,9 +143,10 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
 
     TCarte * newCell;
     TCarte * aux;
+    int i;
 
-    int i = 0;
-    do{
+    for(i = 0; i < 35; i++)
+    {
         newCell = (TCarte*) malloc (sizeof(TCarte));
         (*newCell).identifiant = tabPioche[i];
         (*newCell).carteSuivante = NULL;
@@ -161,8 +162,7 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
             (*aux).carteSuivante = newCell;
             aux = newCell;
         }
-        i = i + 1;        
-    } while (tabPioche[i] != NULL);
+    }
 
     melanger_carte(pioche, defausse);
 }
