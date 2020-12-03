@@ -368,6 +368,26 @@ int nombre_carte(TJoueur leJoueur){
     return nbCarte;
 }
 
+// Fonction qui retourne le nombre de dés du joueur passé en paramètre.
+int nombre_des(TJoueur leJoueur){
+    TDe * aux;
+    leJoueur.des = aux;
+    int nbDes = 0;
+    if(aux == NULL)
+    {
+        return nbDes;
+    }
+    else
+    {
+        while(aux != NULL)
+        {
+            nbDes = nbDes + 1;
+            aux = aux->deSuivant;
+        }
+    }
+    return nbDes;
+}
+
 
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
     printf("Nombre de wasabi : %d : %s ",tabCarte[(*laCarte).identifiant].nbWasabi,tabCarte[(*laCarte).identifiant].libelle);
