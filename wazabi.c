@@ -120,25 +120,30 @@ TJoueur saisir_joueur(TJoueur joueurActuelle, TJoueur tabJoueur[3])
     return joueurSelect;    
 }
 void init_pioche(TPioche * pioche, TPioche * defausse){
-    int tabPioche[35] = {1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
+    int tabPioche[36] = {1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10};
 
+    TCarte * newCell;
+    TCarte * aux;
 
-    TCarte * firstCard;
-    firstCard = malloc(sizeof(TCarte));
-    (*firstCard).identifiant = 1;
-    (*firstCard).carteSuivante = NULL;
-    (*defausse).sommet = firstCard;
+    int i = 0;
+    do{
+        newCell = (TCarte*) malloc (sizeof(TCarte));
+        (*newCell).identifiant = tabPioche[i];
+        (*newCell).carteSuivante = NULL;
 
-    if(defausse != NULL){
-        defausse->sommet = firstCard;
-
-        while(aux != NULL){
-
+        if((*pioche).sommet == NULL)
+        { // La pioche est vide, on ajoute le premier élément.
+            (*defausse).sommet = newCell;
+            aux = (*defausse).sommet;
         }
-    }
-
-    defausse->sommet = aux;
-
+        else 
+        {
+            // La liste n'est pas vide, ajout après la dernière cellule.
+            (*aux).carteSuivante = newCell;
+            aux = newCell;
+        }
+        i = i + 1;        
+    } while (tabPioche[i] != NULL);
 
     melanger_carte(pioche, defausse);
 }
