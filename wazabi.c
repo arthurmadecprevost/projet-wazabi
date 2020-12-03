@@ -328,15 +328,6 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche){
     return joueur;
 }
 
-typedef struct _TJoueur
-{
-	int id;  //Numéro du joueur
-    char pseudo[25]; //Pseudo du joueur
-    TCarte * cartes; //Les cartes du joueur
-    TDe * des; //Les dés du joueur
-    bool joue;	//
-} TJoueur;
-
 // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
 void afficher_joueur(TJoueur joueur){
     int i;
