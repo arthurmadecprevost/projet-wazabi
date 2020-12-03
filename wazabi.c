@@ -337,8 +337,10 @@ void afficher_joueur(TJoueur joueur){
     for(i = 0; i<24; i++){
         printf("%s",joueur.pseudo[i]);
     }
-    printf("\nNombre de cartes: %d \n", nombre_cartes(joueur));
-    printf("\nNombre de dés: %d \n", nombre_des(joueur));
+    int nbCartes = nombre_carte(joueur);
+    int nbDes = nombre_des(joueur);
+    printf("\nNombre de cartes: %d \n", nbCartes);
+    printf("\nNombre de dés: %d \n", nbDes);
 }
 
 
@@ -369,6 +371,26 @@ int nombre_carte(TJoueur leJoueur){
         }
     }
     return nbCarte;
+}
+
+// Fonction qui retourne le nombre de dés du joueur passé en paramètre.
+int nombre_des(TJoueur leJoueur){
+    TDe * aux;
+    leJoueur.des = aux;
+    int nbDes = 0;
+    if(aux == NULL)
+    {
+        return nbDes;
+    }
+    else
+    {
+        while(aux != NULL)
+        {
+            nbDes = nbDes + 1;
+            aux = aux->deSuivant;
+        }
+    }
+    return nbDes;
 }
 
 
