@@ -18,7 +18,7 @@ typedef struct _TCarte
 } TCarte;
 
 typedef struct DefCarte{
-    char libelle[75];
+    char * libelle[75];
     int nbWasabi;
 } DefCarte;
 
@@ -47,15 +47,15 @@ typedef struct _TJoueur
 // **********************
 //  prototypes des fonctions
 // **********************
-void init_partie(TJoueur tabJoueur[], TPioche * pioche); // Procédure qui initialise les dés, les cartes ainsi que le pseudo d’un joueur
+void init_partie(TJoueur tabJoueur[], TPioche * pioche, TPioche * defausse); // Procédure qui initialise les dés, les cartes ainsi que le pseudo d’un joueur
 void init_tabCarte(DefCarte tabCarte[10]); //procédure qui va initialiser le tableau de définitions des cartes
-void init_pioche(TPioche * pioche, TPioche * defausse); // Initialisation de la pioche.
+void init_pioche(TPioche * pioche,TPioche * defausse); // Initialisation de la pioche.
 void init_de(TJoueur leJoueur);// Procédure qui va donner 4 dés à un joueur
 void nouveau_de(TJoueur joueur); // Procédure qui ajoute un dé à un joueur
 TJoueur nouveauJoueur(int numJoueur, TPioche * pioche); //Procédure qui ajoute un joueur à la liste des joueurs  
 
 void afficher_joueur(TJoueur joueur); // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
-void afficher_les_joueurs(TJoueur leJoueur1,TJoueur leJoueur2,TJoueur leJoueur3);//procédure qui afficher tous les joueurs à l'écran
+void afficher_les_joueurs(TJoueur tabJoueur[]);//procédure qui afficher tous les joueurs à l'écran
 void afficher_lancer(TJoueur leJoueur);// procédure qui affiche les dés d'un joueur
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
 
@@ -65,7 +65,7 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse);//prend les cartes
 int nombre_carte(TJoueur leJoueur); //Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 
 void lancer_des(TJoueur joueur); // Procédure qui va changer la valeur des dés d’un joueur, 1 pour le dé  “donner dé” , 2 pour le dé “piocher carte”, 3 pour le dé “Wasabi”
-void echange_de(TJoueur leJoueur1,TJoueur leJoueur2,TJoueur leJoueur3);// Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
+void echange_de(TJoueur tabJoueur[]);// Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
 void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 
@@ -80,12 +80,29 @@ int saisir_entre(int min, int max);
 int main ()
 {
     TJoueur tabJoueur[3];
-    TPioche * pioche;
-    //init_partie(tabJoueur,pioche);
-    
-    init_partie(tabJoueur,pioche);
+    TPioche * pioche = NULL;  
+    TPioche * defausse = NULL; 
+     
+    DefCarte tabCarte[10];
+    bool sensAntiHoraire = true;
+
+    init_tabCarte(tabCarte);
+
+    init_partie(tabJoueur,pioche,defausse);
+
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 // ***************************************************************************************************************************************************************
@@ -93,9 +110,10 @@ int main ()
 // ***************************************************************************************************************************************************************
 
 // Procédure qui initialise les dés, les cartes ainsi que le pseudo d’un joueur
-void init_partie(TJoueur tabJoueur[3], TPioche * pioche){
+void init_partie(TJoueur tabJoueur[3], TPioche * pioche, TPioche * defausse){
     int i;
     printf("******************************* Bienvenue dans le jeu Wazabi *************************************\n\n");
+    init_pioche(pioche,defausse);
     for(i = 0; i < 3; i++)
     {
         tabJoueur[i] = nouveauJoueur(i,pioche);
@@ -103,7 +121,7 @@ void init_partie(TJoueur tabJoueur[3], TPioche * pioche){
 }
 
 void init_tabCarte(DefCarte tabCarte[10]){
-    /*tabCarte[0].libelle[75] = "Supprimez 1 de vos des ";
+    tabCarte[0].libelle[75] = "Supprimez 1 de vos des ";
     tabCarte[1].libelle[75] = "Tous les joueurs donnent leurs des a leur voisin de gauche ou de droite ";
     tabCarte[2].libelle[75] = "Supprimez 2 de vos des ";
     tabCarte[3].libelle[75] = "Donnez 1 de vos des au joueur de votre choix ";
@@ -112,7 +130,7 @@ void init_tabCarte(DefCarte tabCarte[10]){
     tabCarte[6].libelle[75] = "Piochez 3 cartes dans la pioche ";
     tabCarte[7].libelle[75] = "Tous les joueurs sauf vous n’ont plus que 2 cartes";
     tabCarte[8].libelle[75] = "Le joueur de votre choix passe son tour";
-    tabCarte[9].libelle[75] = "Rejouez et changez de sens ";*/
+    tabCarte[9].libelle[75] = "Rejouez et changez de sens ";
   
     tabCarte[0].nbWasabi = 1;
     tabCarte[1].nbWasabi = 2;
@@ -134,15 +152,18 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
     TCarte * aux;
     int i;
 
+
     for(i = 0; i < 35; i++)
     {
         newCell = (TCarte*) malloc (sizeof(TCarte));
         (*newCell).identifiant = tabPioche[i];
         (*newCell).carteSuivante = NULL;
 
-        if((*pioche).sommet == NULL)
+        if((*defausse).sommet == NULL)
         { // La pioche est vide, on ajoute le premier élément.
+            printf("\nici\n");
             (*defausse).sommet = newCell;
+            
             aux = (*defausse).sommet;
         }
         else 
@@ -151,9 +172,12 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
             (*aux).carteSuivante = newCell;
             aux = newCell;
         }
+
     }
+    
 
     melanger_carte(pioche, defausse);
+
 }
 
 // Procédure qui va donner 4 dés à un joueur
@@ -189,6 +213,7 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche){
     {
         piocher_carte(joueur,pioche);
     }
+
     init_de(joueur);
 
     return joueur;
@@ -213,10 +238,10 @@ void afficher_joueur(TJoueur joueur){
 }
 
 //procédure qui afficher tous les joueurs à l'écran
-void afficher_les_joueurs(TJoueur leJoueur1,TJoueur leJoueur2,TJoueur leJoueur3){
-    afficher_joueur(leJoueur1);
-    afficher_joueur(leJoueur2);
-    afficher_joueur(leJoueur3);
+void afficher_les_joueurs(TJoueur tabJoueur[]){
+    afficher_joueur(tabJoueur[0]);
+    afficher_joueur(tabJoueur[1]);
+    afficher_joueur(tabJoueur[2]);
 }
 
 // procédure qui affiche les dés d'un joueur
@@ -263,6 +288,7 @@ void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
 //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
 void piocher_carte(TJoueur leJoueur, TPioche * pioche){
     TCarte * newCarte;
+    
     newCarte = (*pioche).sommet;
     (*pioche).sommet = (*newCarte).carteSuivante;
     
@@ -384,22 +410,21 @@ void lancer_des(TJoueur joueur){
 }
 
 // Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
-void echange_de(TJoueur leJoueur1,TJoueur leJoueur2,TJoueur leJoueur3){
+void echange_de(TJoueur tabJoueur[]){
     printf("Dans quelle sens voulez vous tournez les dés ? (0 pour sens horaire, 1 pour sens anti horaire)\n ");
     int sens = saisir_entre(0,1);
-    int de1 = nombre_des(leJoueur1);
-    int de2 = nombre_des(leJoueur2);
-    int de3 = nombre_des(leJoueur3);
-    int dif = 0;
+    int de1 = nombre_des(tabJoueur[0]);
+    int de2 = nombre_des(tabJoueur[1]);
+    int de3 = nombre_des(tabJoueur[2]);
 
     if(sens){
-        egaliser_de(leJoueur1,de1,de3);
-        egaliser_de(leJoueur2,de2,de1);
-        egaliser_de(leJoueur3,de3,de2);
+        egaliser_de(tabJoueur[0],de1,de3);
+        egaliser_de(tabJoueur[1],de2,de1);
+        egaliser_de(tabJoueur[2],de3,de2);
     }else{
-        egaliser_de(leJoueur1,de1,de2);
-        egaliser_de(leJoueur2,de2,de3);
-        egaliser_de(leJoueur3,de3,de1);    
+        egaliser_de(tabJoueur[0],de1,de2);
+        egaliser_de(tabJoueur[1],de2,de3);
+        egaliser_de(tabJoueur[2],de3,de1);    
     }
 }
 
