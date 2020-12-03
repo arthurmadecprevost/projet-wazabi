@@ -380,7 +380,13 @@ int nombre_carte(TJoueur leJoueur){
 
 // Procédure qui va changer la valeur des dés d’un joueur, 1 pour le dé  “donner dé” , 2 pour le dé “piocher carte”, 3 pour le dé “Wasabi”
 void lancer_des(TJoueur joueur){
+    TDe * aux;
+    aux = joueur.des;
 
+    do {
+        (*aux).valeur = nombre_aleatoire(1,3);
+        aux = (*aux).deSuivant;
+    } while(aux != NULL);
 }
 
 // Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
