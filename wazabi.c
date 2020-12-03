@@ -95,25 +95,42 @@ int nombre_aleatoire(int min, int max){
 TJoueur saisir_joueur(TJoueur joueurActuelle, TJoueur tabJoueur[3])
 {
     TJoueur joueurSelect;
+    TJoueur joueur1;
+    TJoueur joueur2;
     int nb;
 
+    if(joueurActuelle.id == 0)
+    {
+        joueur1 = tabJoueur[1];
+        joueur2 = tabJoueur[2];
+    }
+    else if(joueurActuelle.id == 1)
+    {
+        joueur1 = tabJoueur[0];
+        joueur2 = tabJoueur[2];
+    }
+    else
+    {
+        joueur1 = tabJoueur[0];
+        joueur2 = tabJoueur[1];
+    }
     do
     {
         printf("Veuillez saisir un joueur (autre que vous même) \n");
         printf("1 - "); 
-        //afficher_joueur(joueur.joueurPrec);
+        //afficher_joueur(joueur1);
         printf("2 - "); 
-        //afficher_joueur(joueur.joueurSuiv);
+        //afficher_joueur(joueur2);
         scanf(" %d", nb);
     } while (nb > 2 || nb < 1);
    
     switch(nb)
     {
         case 1:
-            joueurSelect = (*(*joueur).joueurPrec);
+            joueurSelect = joueur1;
         break;
         case 2:
-            joueurSelect = (*(*joueur).joueurSuiv);
+            joueurSelect = joueur2;
         break;
     }
 
@@ -147,7 +164,6 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
 
     melanger_carte(pioche, defausse);
 }
-*/
 void piocher_carte(TJoueur leJoueur, TPioche * pioche){
     TCarte * newCarte;
     newCarte = (*pioche).sommet;
@@ -320,7 +336,25 @@ void init_partie(TJoueur tabJoueur[3], TPioche * pioche){
         tabJoueur[i] = nouveauJoueur(i,pioche);
     }
 }
-*/
+int nombre_carte(TJoueur leJoueur){
+    int nbCarte; //Nombre de carte 
+    TCarte * aux;
+    leJoueur.cartes = aux;
+    nbCarte = 0;
+    if(aux == NULL)
+    {
+        return nbCarte;
+    }
+    else
+    {
+        while(aux != NULL)
+        {
+            nbCarte = nbCarte + 1;
+            aux = aux.carteSuivante;
+        }
+    }
+    return nbCarte;
+}
 
 
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
