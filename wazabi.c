@@ -63,7 +63,7 @@ void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui a
 void defausser_carte(TCarte * laCarte, TJoueur leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
 void tour_suivant( TJoueur leJoueur,bool sens, TJoueur tabCarte[]); //procédure qui va changer le joueur actuel
 void init_tabCarte(DefCarte tabCarte[10]); //procédure qui va initialiser le tableau de définitions des cartes
-void afficher_joueur(TJoueur joueur);
+void afficher_joueur(TJoueur joueur); // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
 // **********************
 //  programme principal
 // **********************
@@ -327,6 +327,27 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche){
 
     return joueur;
 }
+
+typedef struct _TJoueur
+{
+	int id;  //Numéro du joueur
+    char pseudo[25]; //Pseudo du joueur
+    TCarte * cartes; //Les cartes du joueur
+    TDe * des; //Les dés du joueur
+    bool joue;	//
+} TJoueur;
+
+// Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
+void afficher_joueur(TJoueur joueur){
+    int i;
+    printf("Joueur n° %d \nPseudo: ", joueur.id);
+    for(i = 0; i<24; i++){
+        printf("%s",joueur.pseudo[i]);
+    }
+    printf("\nNombre de cartes: %d \n", nombre_cartes(joueur));
+    printf("\nNombre de dés: %d \n", nombre_des(joueur));
+}
+
 
 void init_partie(TJoueur tabJoueur[3], TPioche * pioche){
     int i;
