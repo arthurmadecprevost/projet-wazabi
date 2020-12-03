@@ -53,6 +53,7 @@ void init_pioche(TPioche * pioche, TPioche * defausse); // Initialisation de la 
 void init_de(TJoueur leJoueur);// Procédure qui va donner 4 dés à un joueur
 void nouveau_de(TJoueur joueur); // Procédure qui ajoute un dé à un joueur
 TJoueur nouveauJoueur(int numJoueur, TPioche * pioche); //Procédure qui ajoute un joueur à la liste des joueurs  
+void debut_partie();
 
 void afficher_joueur(TJoueur joueur); // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
 void afficher_les_joueurs(TJoueur leJoueur1,TJoueur leJoueur2,TJoueur leJoueur3);//procédure qui afficher tous les joueurs à l'écran
@@ -69,6 +70,7 @@ void echange_de(TJoueur leJoueur1,TJoueur leJoueur2,TJoueur leJoueur3);// Procé
 void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 void donner_de (TJoueur joueur1, TJoueur joueur2); // Procédure qui prend un dé du joueur1 pour le donner au joueur2
+void supprimer_de(TJoueur joueur); // Procédure qui supprime le dé d'un joueur
 
 TJoueur saisir_joueur(TJoueur joueurActuelle, TJoueur tabJoueur[3]);//Fonction qui va demander au joueur actuel, quel joueur séléctionner
 void tour_suivant( TJoueur leJoueur,bool sens, TJoueur tabCarte[]); //procédure qui va changer le joueur actuel
@@ -449,7 +451,16 @@ int nombre_des(TJoueur leJoueur){
     }
     return nbDes;
 }
+// Procédure qui supprime le dé d'un joueur
+void supprimer_de(TJoueur joueur)
+{
+    TDe * aux;
 
+    aux = joueur.des;
+    joueur.des = (*aux).deSuivant;
+
+    free(aux);
+}
 
 // ***************************************************************************************************************************************************************
 // Procédure / fonctions déroulement de la partie
