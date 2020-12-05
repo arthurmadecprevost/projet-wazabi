@@ -53,7 +53,7 @@ void init_pioche(TPioche * pioche,TPioche * defausse); // Initialisation de la p
 void init_de(TJoueur leJoueur);// Procédure qui va donner 4 dés à un joueur
 void nouveau_de(TJoueur joueur); // Procédure qui ajoute un dé à un joueur
 TJoueur nouveauJoueur(int numJoueur, TPioche * pioche); //Procédure qui ajoute un joueur à la liste des joueurs  
-void debut_partie();
+TJoueur debut_partie(TJoueur tabJoueur[3]); // Procédure où chaque joueur va lancer ses dés pour savoir qui est celui qui va débuter le jeu et connaître le sens du jeu
 
 void afficher_joueur(TJoueur joueur); // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
 void afficher_les_joueurs(TJoueur tabJoueur[]);//procédure qui afficher tous les joueurs à l'écran
@@ -71,6 +71,7 @@ void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui 
 int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 void donner_de (TJoueur joueur1, TJoueur joueur2); // Procédure qui prend un dé du joueur1 pour le donner au joueur2
 void supprimer_de(TJoueur joueur); // Procédure qui supprime le dé d'un joueur
+int nb_wazabi(TJoueur joueur); //Fonction qui retourne le nombre de wazabi d'un joueur
 
 TJoueur saisir_joueur(TJoueur joueurActuelle, TJoueur tabJoueur[3]);//Fonction qui va demander au joueur actuel, quel joueur séléctionner
 void tour_suivant( TJoueur leJoueur,bool sens, TJoueur tabCarte[]); //procédure qui va changer le joueur actuel
@@ -95,19 +96,6 @@ int main ()
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ***************************************************************************************************************************************************************
 //  Fonctions/Procédures début de la partie
 // ***************************************************************************************************************************************************************
@@ -221,7 +209,26 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche){
 
     return joueur;
 }
+// Procédure où chaque joueur va lancer ses dés pour savoir qui est celui qui va débuter le jeu et connaître le sens du jeu
+TJoueur debut_partie(TJoueur tabJoueur[3])
+{
+    int nbWazabi;
+    int nbWazabiMax = 0;
+    TJoueur joueurActuelle;
 
+    for(int i = 0; i < 3; i++)
+    {
+        lancer_des(tabJoueur[i]);
+        nbWazabi = nb_wazabi(tabJoueur[i]);
+
+        if(nbWazabi > nbWazabiMax)
+        {
+            nbWazabiMax = nbWazabi;
+            joueurActuelle = tabJoueur[i];
+        }
+    }  
+    return joueurActuelle;
+}
 
 // ***************************************************************************************************************************************************************
 //  Procédures affichage
@@ -487,7 +494,24 @@ void supprimer_de(TJoueur joueur)
 
     free(aux);
 }
+//Fonction qui retourne le nombre de wazabi d'un joueur
+int nb_wazabi(TJoueur joueur)
+{
+    TDe * aux;
+    int nbWazabi = 0;
 
+    aux = joueur.des;
+
+    while (aux != NULL)
+    {
+        if((*aux).valeur == 3)
+        {
+            nbWazabi = nbWazabi + 1;
+        }
+        aux = (*aux).deSuivant;
+    }
+    return nbWazabi;
+} 
 // ***************************************************************************************************************************************************************
 // Procédure / fonctions déroulement de la partie
 // ***************************************************************************************************************************************************************
