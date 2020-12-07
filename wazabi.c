@@ -64,7 +64,7 @@ void piocher_carte(TJoueur leJoueur, TPioche * pioche); //Procédure qui va pren
 void defausser_carte(TCarte * laCarte, TJoueur leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
 void melanger_carte(TPioche * laPioche, TPioche * laDefausse);//prend les cartes de la défausse pour les mettre dans la pioche de façon aléatoire
 int nombre_carte(TJoueur leJoueur); //Fonction qui retourne le nombre de dés du joueur passé en paramètre.
-bool carte_utilisable(TCarte * laCarte, TJoueur joueur); // Fonction qui va, selon l’état actuel de la partie, déterminer si la carte peut être utilisée en fonction du nb de wazabi. Renvoie vrai si elle peut être utilisé, faux sinon
+bool carte_utilisable(DefCarte laCarte, TJoueur joueur); // Fonction qui va, selon l’état actuel de la partie, déterminer si la carte peut être utilisée en fonction du nb de wazabi. Renvoie vrai si elle peut être utilisé, faux sinon
 
 void lancer_des(TJoueur joueur); // Procédure qui va changer la valeur des dés d’un joueur, 1 pour le dé  “donner dé” , 2 pour le dé “piocher carte”, 3 pour le dé “Wasabi”
 void echange_de(TJoueur tabJoueur[]);// Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
