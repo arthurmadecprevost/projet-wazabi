@@ -51,7 +51,7 @@ void init_partie(TJoueur tabJoueur[], TPioche * pioche, TPioche * defausse); // 
 void init_tabCarte(DefCarte tabCarte[10]); //procédure qui va initialiser le tableau de définitions des cartes
 void init_pioche(TPioche * pioche,TPioche * defausse); // Initialisation de la pioche.
 void init_de(TJoueur leJoueur);// Procédure qui va donner 4 dés à un joueur
-void nouveau_de(TJoueur joueur); // Procédure qui ajoute un dé à un joueur
+void nouveau_de(TJoueur * joueur); // Procédure qui ajoute un dé à un joueur
 TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse); //Procédure qui ajoute un joueur à la liste des joueurs  
 
 TJoueur debut_partie(TJoueur tabJoueur[3]); // Procédure où chaque joueur va lancer ses dés pour savoir qui est celui qui va débuter le jeu et connaître le sens du jeu
@@ -61,16 +61,17 @@ void afficher_les_joueurs(TJoueur tabJoueur[]);//procédure qui afficher tous le
 void afficher_lancer(TJoueur leJoueur);// procédure qui affiche les dés d'un joueur
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
 
-void piocher_carte(TJoueur leJoueur, TPioche * pioche,TPioche * defausse); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
+void piocher_carte(TJoueur * leJoueur, TPioche * pioche,TPioche * defausse); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
 void defausser_carte(TCarte * laCarte, TJoueur leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
 void melanger_carte(TPioche * laPioche, TPioche * laDefausse);//prend les cartes de la défausse pour les mettre dans la pioche de façon aléatoire
-int nombre_carte(TJoueur leJoueur); //Fonction qui retourne le nombre de dés du joueur passé en paramètre.
-bool carte_utilisable(DefCarte laCarte, TJoueur joueur); // Fonction qui va, selon l’état actuel de la partie, déterminer si la carte peut être utilisée en fonction du nb de wazabi. Renvoie vrai si elle peut être utilisé, faux sinon
+int nombre_carte(TJoueur * leJoueur); //Fonction qui retourne le nombre de dés du joueur passé en paramètre.
+bool carte_utilisable(DefCarte * laCarte, TJoueur joueur); // Fonction qui va, selon l’état actuel de la partie, déterminer si la carte peut être utilisée en fonction du nb de wazabi. Renvoie vrai si elle peut être utilisé, faux sinon
+
 
 void lancer_des(TJoueur joueur); // Procédure qui va changer la valeur des dés d’un joueur, 1 pour le dé  “donner dé” , 2 pour le dé “piocher carte”, 3 pour le dé “Wasabi”
 void echange_de(TJoueur tabJoueur[]);// Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
 void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
-int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
+int nombre_des(TJoueur * leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 void donner_de (TJoueur joueur1, TJoueur joueur2); // Procédure qui prend un dé du joueur1 pour le donner au joueur2
 void supprimer_de(TJoueur joueur); // Procédure qui supprime le dé d'un joueur
 int nb_wazabi(TJoueur joueur); //Fonction qui retourne le nombre de wazabi d'un joueur
@@ -100,7 +101,10 @@ int main ()
     printf("\n(tableau de carte initialise)\n");
 
     init_partie(tabJoueur,pioche,defausse);
+    
+    printf("\nehoooo\n");
 
+    afficher_les_joueurs(tabJoueur);
     return 0;
 }
 // ***************************************************************************************************************************************************************
@@ -117,7 +121,8 @@ void init_partie(TJoueur tabJoueur[3], TPioche * pioche, TPioche * defausse){
     for(i = 0; i < 3; i++)
     {
         tabJoueur[i] = nouveauJoueur(i,pioche,defausse);
-    }
+    } 
+    printf("\n(tous les joueurs sont cree)\n");
 }
 
 void init_tabCarte(DefCarte tabCarte[10]){
@@ -158,7 +163,8 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
         newCell = (TCarte*) malloc (sizeof(TCarte));
         (*newCell).identifiant = tabPioche[i];
         (*newCell).carteSuivante = NULL;
-        printf("\n");
+        
+        //printf("\n");
 
         if((*defausse).sommet == NULL)
         { // La pioche est vide, on ajoute le premier élément.
@@ -189,12 +195,12 @@ void init_de(TJoueur leJoueur){
     {
         printf("\n(on va avoir un new de)\n");
 
-        nouveau_de(leJoueur);
+        nouveau_de(&leJoueur);
     }
 }
 
 // Procédure qui ajoute un dé à un joueur
-void nouveau_de(TJoueur joueur){
+void nouveau_de(TJoueur * joueur){
     TDe * aux;
     TDe * newDe;
     newDe = (TDe*) malloc (sizeof(TDe));
@@ -203,14 +209,16 @@ void nouveau_de(TJoueur joueur){
     (*newDe).deSuivant = NULL;
     printf("\n(le de est defini)\n");
 
-    aux = joueur.des;
+    aux = (*joueur).des;
+    
     printf("\n(aux est defini)\n");
 
     if(aux == NULL)
     {
         printf("\n(aux = null)\n");
     
-        joueur.des=newDe;
+        (*joueur).des = newDe;
+        printf("valeur de joueur.de = %d", (*(*joueur).des).valeur);
     }else
     {
         printf("\n(dans le else)\n");
@@ -234,6 +242,7 @@ void nouveau_de(TJoueur joueur){
     }*/
 }
 
+
 //Procédure qui ajoute un joueur à la partie
 TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse){ 
     TJoueur joueur;
@@ -242,13 +251,14 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse){
     joueur.id = numJoueur;
     printf("Joueur n°%d veuillez saisir votre pseudo ? \n", numJoueur + 1);
     scanf(" %s", joueur.pseudo);
-    printf("\n(pseudo affecte)\n");
-
+    joueur.pseudo[24]= "\0";
+    printf("\n(pseudo affecte %s)\n", joueur.pseudo);
+   
     joueur.joue = false;
-    for(int i = 0; i < 4; i++)//initialisation des cartes du joueur
+    for(int i = 0; i < 3; i++)//initialisation des cartes du joueur
     {
         printf("\n(on va piocher une carte)\n");
-        piocher_carte(joueur,pioche,defausse);
+        piocher_carte(&joueur,pioche,defausse);
         printf("\n(carte piochee)\n");
     }
 
@@ -286,15 +296,12 @@ TJoueur debut_partie(TJoueur tabJoueur[3])
 // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
 void afficher_joueur(TJoueur joueur){
     int i;
-    printf("Joueur n° %d \nPseudo: ", joueur.id);
-    for(i = 0; i<24; i++)
-    {
-        printf("%s",joueur.pseudo[i]);
-    }
-    int nbCartes = nombre_carte(joueur);
-    int nbDes = nombre_des(joueur);
-    printf("\nNombre de cartes: %d \n", nbCartes);
-    printf("\nNombre de dés: %d \n", nbDes);
+    printf("Joueur n° %d Pseudo: %s\n", joueur.id+1, &joueur.pseudo);
+
+    int nbCartes = nombre_carte(&joueur);
+    int nbDes = nombre_des(&joueur);
+    printf("Nombre de cartes: %d \n", nbCartes);
+    printf("Nombre de dés: %d \n", nbDes);
 }
 
 //procédure qui afficher tous les joueurs à l'écran
@@ -346,7 +353,7 @@ void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
 // ***************************************************************************************************************************************************************
 
 //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
-void piocher_carte(TJoueur leJoueur, TPioche * pioche, TPioche * defausse){
+void piocher_carte(TJoueur * leJoueur, TPioche * pioche, TPioche * defausse){
     
     if((*pioche).sommet==NULL)
     {
@@ -369,13 +376,17 @@ void piocher_carte(TJoueur leJoueur, TPioche * pioche, TPioche * defausse){
 
     printf("\n(carte suivante a null)\n");
 
-    if(leJoueur.cartes==NULL)
+    //printf("\n(valeur carte %d)\n", (*(*leJoueur).cartes).identifiant);
+
+    if((*leJoueur).cartes==NULL)
     {
-        leJoueur.cartes = newCarte;
+        printf("\n(ici c'est le if de pioche)\n");
+    
+        (*leJoueur).cartes = newCarte;
     }else
     {
-        printf("2");
-        aux= leJoueur.cartes;
+        printf("\n(et la le else, ca veut dire c la deuxieme carte)\n");
+        aux= (*leJoueur).cartes;
         while (aux!=NULL)
         {
             if((*aux).carteSuivante==NULL)
@@ -493,33 +504,41 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
 }
 
 //Fonction qui retourne le nombre de dés du joueur passé en paramètre.
-int nombre_carte(TJoueur leJoueur){
+int nombre_carte(TJoueur * leJoueur){
     int nbCarte; //Nombre de carte 
     TCarte * aux;
-    leJoueur.cartes = aux;
+    aux= (*leJoueur).cartes ;
     nbCarte = 0;
+    printf("(nbCarte c'est 0 pour l'instant)\n");
+    
     if(aux == NULL)
     {
         return nbCarte;
     }
     else
     {
+        printf("(posee dans le else)\n");
+
         while(aux != NULL)
         {
+            printf("(oklm dans le while)\n");
+
             nbCarte = nbCarte + 1;
             aux = (*aux).carteSuivante;
         }
     }
+    printf("(oe je vais retourner nbcarte)\n");
+
     return nbCarte;
 }
 // Fonction qui va, selon l’état actuel de la partie, déterminer si la carte peut être utilisée en fonction du nb de wazabi. Renvoie vrai si elle peut être utilisé, faux sinon
-bool carte_utilisable(DefCarte laCarte, TJoueur joueur)
+bool carte_utilisable(DefCarte * laCarte, TJoueur joueur)
 {
     bool utilisable = false;
     int nbWazabiJoueur;
 
     nbWazabiJoueur = nb_wazabi(joueur);    
-    if(laCarte.nbWasabi <= nbWazabiJoueur)
+    if((*laCarte).nbWasabi <= nbWazabiJoueur)
     {
         utilisable = true;
     }
@@ -546,9 +565,9 @@ void echange_de(TJoueur tabJoueur[]){
 
     printf("Dans quelle sens voulez vous tournez les dés ? (0 pour sens horaire, 1 pour sens anti horaire)\n ");
     int sens = saisir_entre(0,1);
-    int de1 = nombre_des(tabJoueur[0]);
-    int de2 = nombre_des(tabJoueur[1]);
-    int de3 = nombre_des(tabJoueur[2]);
+    int de1 = nombre_des(&tabJoueur[0]);
+    int de2 = nombre_des(&tabJoueur[1]);
+    int de3 = nombre_des(&tabJoueur[2]);
 
     if(sens
     ){
@@ -566,7 +585,7 @@ void echange_de(TJoueur tabJoueur[]){
 // Procédure qui prend un dé du joueur1 pour le donner au joueur2
 void donner_de (TJoueur joueur1, TJoueur joueur2){
 //    supprimer_de(joueur1);
-    nouveau_de(joueur2);
+    nouveau_de(&joueur2);
 }
 
 //Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
@@ -579,16 +598,16 @@ void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau){
             nbDeAct = nbDeAct -1;
         }else
         {
-            nouveau_de(leJoueur);
+            nouveau_de(&leJoueur);
             nbDeAct = nbDeAct +1;
         }
     }
 }
 
 // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
-int nombre_des(TJoueur leJoueur){
+int nombre_des(TJoueur * leJoueur){
     TDe * aux;
-    leJoueur.des = aux;
+    (*leJoueur).des = aux;
     int nbDes = 0;
     if(aux == NULL)
     {
