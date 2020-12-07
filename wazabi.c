@@ -96,6 +96,7 @@ int main ()
 
     init_partie(tabJoueur,pioche,defausse);
 
+    afficher_les_joueurs(tabJoueur);
     return 0;
 }
 
@@ -166,7 +167,7 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
         newCell = (TCarte*) malloc (sizeof(TCarte));
         (*newCell).identifiant = tabPioche[i];
         (*newCell).carteSuivante = NULL;
-        printf("\n");
+        //printf("\n");
 
         if((*defausse).sommet == NULL)
         { // La pioche est vide, on ajoute le premier élément.
@@ -250,7 +251,7 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse){
     joueur.id = numJoueur;
     printf("Joueur n°%d veuillez saisir votre pseudo ? \n", numJoueur + 1);
     scanf(" %s", joueur.pseudo);
-    printf("\n(pseudo affecte)\n");
+    printf("\n(pseudo affecte %s)\n", joueur.pseudo);
 
     joueur.joue = false;
     for(int i = 0; i < 4; i++)//initialisation des cartes du joueur
@@ -275,11 +276,13 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse){
 // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
 void afficher_joueur(TJoueur joueur){
     int i;
-    printf("Joueur n° %d \nPseudo: ", joueur.id);
-    for(i = 0; i<24; i++)
+    printf("Joueur n° %d Pseudo: %s", joueur.id+1 , joueur.pseudo);
+    /* for(i = 0; i<24; i++)
     {
-        printf("%s",joueur.pseudo[i]);
-    }
+        printf("\n (lettre %d)\n",i);
+        printf("%c",joueur.pseudo[i]);
+    }*/
+    printf(" ", );
     int nbCartes = nombre_carte(joueur);
     int nbDes = nombre_des(joueur);
     printf("\nNombre de cartes: %d \n", nbCartes);
