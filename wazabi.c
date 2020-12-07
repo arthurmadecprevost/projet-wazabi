@@ -52,7 +52,8 @@ void init_tabCarte(DefCarte tabCarte[10]); //procédure qui va initialiser le ta
 void init_pioche(TPioche * pioche,TPioche * defausse); // Initialisation de la pioche.
 void init_de(TJoueur leJoueur);// Procédure qui va donner 4 dés à un joueur
 void nouveau_de(TJoueur joueur); // Procédure qui ajoute un dé à un joueur
-TJoueur nouveauJoueur(int numJoueur, TPioche * pioche); //Procédure qui ajoute un joueur à la liste des joueurs  
+TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse); //Procédure qui ajoute un joueur à la liste des joueurs  
+
 TJoueur debut_partie(TJoueur tabJoueur[3]); // Procédure où chaque joueur va lancer ses dés pour savoir qui est celui qui va débuter le jeu et connaître le sens du jeu
 
 void afficher_joueur(TJoueur joueur); // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
@@ -60,7 +61,7 @@ void afficher_les_joueurs(TJoueur tabJoueur[]);//procédure qui afficher tous le
 void afficher_lancer(TJoueur leJoueur);// procédure qui affiche les dés d'un joueur
 void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
 
-void piocher_carte(TJoueur leJoueur, TPioche * pioche); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
+void piocher_carte(TJoueur leJoueur, TPioche * pioche,TPioche * defausse); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
 void defausser_carte(TCarte * laCarte, TJoueur leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
 void melanger_carte(TPioche * laPioche, TPioche * laDefausse);//prend les cartes de la défausse pour les mettre dans la pioche de façon aléatoire
 int nombre_carte(TJoueur leJoueur); //Fonction qui retourne le nombre de dés du joueur passé en paramètre.
@@ -85,13 +86,18 @@ int saisir_entre(int min, int max);
 int main ()
 {
     TJoueur tabJoueur[3];
-    TPioche * pioche = NULL;  
-    TPioche * defausse = NULL; 
+
+    TPioche * defausse; 
+    TPioche * pioche;  
+    defausse = (TPioche*) malloc (sizeof(TPioche)); 
+    pioche = (TPioche*) malloc (sizeof(TPioche));
+    
      
     DefCarte tabCarte[10];
     bool sensAntiHoraire = true;
 
     init_tabCarte(tabCarte);
+    printf("\n(tableau de carte initialise)\n");
 
     init_partie(tabJoueur,pioche,defausse);
 
@@ -106,9 +112,11 @@ void init_partie(TJoueur tabJoueur[3], TPioche * pioche, TPioche * defausse){
     int i;
     printf("******************************* Bienvenue dans le jeu Wazabi *************************************\n\n");
     init_pioche(pioche,defausse);
+    printf("\n(pioche initialise)\n");
+
     for(i = 0; i < 3; i++)
     {
-        tabJoueur[i] = nouveauJoueur(i,pioche);
+        tabJoueur[i] = nouveauJoueur(i,pioche,defausse);
     }
 }
 
@@ -150,31 +158,37 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
         newCell = (TCarte*) malloc (sizeof(TCarte));
         (*newCell).identifiant = tabPioche[i];
         (*newCell).carteSuivante = NULL;
+        printf("\n");
 
         if((*defausse).sommet == NULL)
         { // La pioche est vide, on ajoute le premier élément.
-            printf("\nici\n");
             (*defausse).sommet = newCell;
             
             aux = (*defausse).sommet;
+            printf("ON A AJOUTER AU DEBUT");
         }
         else 
         {
+
             // La liste n'est pas vide, ajout après la dernière cellule.
             (*aux).carteSuivante = newCell;
             aux = newCell;
+            printf("ON A AJOUTER A LA SUITE");
         }
-
     }
+    printf("\ngo melanger les cartes\n");
     
-
     melanger_carte(pioche, defausse);
+    printf("\nles cartes sont melanger\n");
 
 }
 
 // Procédure qui va donner 4 dés à un joueur
 void init_de(TJoueur leJoueur){
-    for(int i =0; i<4;i++){
+    for(int i =0; i<4;i++)
+    {
+        printf("\n(on va avoir un new de)\n");
+
         nouveau_de(leJoueur);
     }
 }
@@ -183,7 +197,33 @@ void init_de(TJoueur leJoueur){
 void nouveau_de(TJoueur joueur){
     TDe * aux;
     TDe * newDe;
-    do {
+    newDe = (TDe*) malloc (sizeof(TDe));
+    printf("\n(le de est allouer)\n");
+    (*newDe).valeur = 1;
+    (*newDe).deSuivant = NULL;
+    printf("\n(le de est defini)\n");
+
+    aux = joueur.des;
+    printf("\n(aux est defini)\n");
+
+    if(aux == NULL)
+    {
+        printf("\n(aux = null)\n");
+    
+        joueur.des=newDe;
+    }else
+    {
+        printf("\n(dans le else)\n");
+        while ((*aux).deSuivant !=  NULL)
+        {
+            aux=(*aux).deSuivant;
+        }
+
+        (*aux).deSuivant=newDe;
+    }
+    
+    
+    /*do {
         aux = (*aux).deSuivant;
     } while((*aux).deSuivant != NULL);
     if((*aux).deSuivant == NULL)
@@ -191,22 +231,30 @@ void nouveau_de(TJoueur joueur){
         (*newDe).valeur = -1;
         (*newDe).deSuivant = NULL;
         (*aux).deSuivant = newDe;
-    }
+    }*/
 }
 
 //Procédure qui ajoute un joueur à la partie
-TJoueur nouveauJoueur(int numJoueur, TPioche * pioche){ 
+TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse){ 
     TJoueur joueur;
+    joueur.cartes=NULL;
+    joueur.des=NULL;
     joueur.id = numJoueur;
     printf("Joueur n°%d veuillez saisir votre pseudo ? \n", numJoueur + 1);
     scanf(" %s", joueur.pseudo);
+    printf("\n(pseudo affecte)\n");
+
     joueur.joue = false;
     for(int i = 0; i < 4; i++)//initialisation des cartes du joueur
     {
-        piocher_carte(joueur,pioche);
+        printf("\n(on va piocher une carte)\n");
+        piocher_carte(joueur,pioche,defausse);
+        printf("\n(carte piochee)\n");
     }
 
     init_de(joueur);
+    printf("\n(de initialises)\n");
+
 
     return joueur;
 }
@@ -239,7 +287,8 @@ TJoueur debut_partie(TJoueur tabJoueur[3])
 void afficher_joueur(TJoueur joueur){
     int i;
     printf("Joueur n° %d \nPseudo: ", joueur.id);
-    for(i = 0; i<24; i++){
+    for(i = 0; i<24; i++)
+    {
         printf("%s",joueur.pseudo[i]);
     }
     int nbCartes = nombre_carte(joueur);
@@ -297,25 +346,40 @@ void afficher_carte(TCarte * laCarte, DefCarte tabCarte[10]){
 // ***************************************************************************************************************************************************************
 
 //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
-void piocher_carte(TJoueur leJoueur, TPioche * pioche){
+void piocher_carte(TJoueur leJoueur, TPioche * pioche, TPioche * defausse){
+    
+    if((*pioche).sommet==NULL)
+    {
+        melanger_carte(pioche,defausse);
+    }
+    
+
     TCarte * newCarte;
-    
     newCarte = (*pioche).sommet;
-    (*pioche).sommet = (*newCarte).carteSuivante;
-    
     TCarte * aux;
-
+    aux = (*pioche).sommet;
     
-    (*newCarte).carteSuivante=NULL;
+    printf("\n(aux et newcarte vu)\n");
+    
+    (*pioche).sommet = (*aux).carteSuivante;
+    
+    
+    printf("\n(newCarte et aux recuperee)\n");
+    (*newCarte).carteSuivante = NULL;
 
+    printf("\n(carte suivante a null)\n");
 
-    if(leJoueur.cartes==NULL){
+    if(leJoueur.cartes==NULL)
+    {
         leJoueur.cartes = newCarte;
-    }else{
+    }else
+    {
+        printf("2");
         aux= leJoueur.cartes;
         while (aux!=NULL)
         {
-            if((*aux).carteSuivante==NULL){
+            if((*aux).carteSuivante==NULL)
+            {
                 (*aux).carteSuivante = newCarte;
             }
             aux =(*aux).carteSuivante;
@@ -333,9 +397,12 @@ void defausser_carte(TCarte * laCarte, TJoueur leJoueur, TPioche * defausse){
 
     aux = leJoueur.cartes;
     prec = aux;
-    while (aux != NULL && !supprimer){
-        if((*aux).identifiant == (*laCarte).identifiant){
-            if(premier){
+    while (aux != NULL && !supprimer)
+    {
+        if((*aux).identifiant == (*laCarte).identifiant)
+        {
+            if(premier)
+            {
                 leJoueur.cartes=(*aux).carteSuivante; 
             }
             (*prec).carteSuivante=(*aux).carteSuivante;
@@ -358,24 +425,56 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
     TCarte * prec;
 
     aux = (*laDefausse).sommet;
-    while(aux != NULL){
+
+    printf("\n On est avant le while\n");
+    while(aux != NULL)
+    {
         nbCarteDef = nbCarteDef+1;
         aux = (*aux).carteSuivante;
     }
-    while((*laDefausse).sommet != NULL){
+    printf("\n On est a compte le nombre de carte y'en a %d \n",nbCarteDef);
+
+    while((*laDefausse).sommet != NULL)
+    {
         aux = (*laDefausse).sommet;
         parcours = 1;
-        valeur = nombre_aleatoire(1,nbCarteDef);
-        while(parcours != valeur){
+        printf("\navant de recup le chiffre alea \n");
+        if(nbCarteDef!=1)
+        {
+            valeur = nombre_aleatoire(1,nbCarteDef);
+        }else{
+            valeur = 1;
+        }
+        printf("\n Le nombre aléatoire à été récupéré (c'est %d) \n", valeur);
+
+        while(parcours != valeur)
+        {
             prec = aux;
             aux = (*aux).carteSuivante;
             parcours = parcours +1;
         }
 
-        if(valeur == 1){
-            (*laDefausse).sommet=(*aux).carteSuivante;
-        }else{
-            (*prec).carteSuivante=(*aux).carteSuivante;
+        if(valeur == 1)
+        {
+            printf("\n valeur = 1\n");
+            if((*aux).carteSuivante != NULL)
+            {
+                (*laDefausse).sommet=(*aux).carteSuivante;
+            }else
+            {
+                (*laDefausse).sommet=NULL;
+            }
+
+        }else
+        {
+            printf("\n valeur != 1\n");
+            if((*aux).carteSuivante != NULL)
+            {
+                (*prec).carteSuivante=(*aux).carteSuivante;
+            }else
+            {
+                (*prec).carteSuivante=NULL;
+            }
         }
 
         if((*laPioche).sommet==NULL){
@@ -385,6 +484,10 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
             (*aux).carteSuivante = (*laPioche).sommet;
             (*laPioche).sommet = aux;
         }
+
+        nbCarteDef = nbCarteDef-1;
+        printf("\nil reste %d cartes \n",nbCarteDef);
+
     }
 
 }
@@ -447,11 +550,13 @@ void echange_de(TJoueur tabJoueur[]){
     int de2 = nombre_des(tabJoueur[1]);
     int de3 = nombre_des(tabJoueur[2]);
 
-    if(sens){
+    if(sens
+    ){
         egaliser_de(tabJoueur[0],de1,de3);
         egaliser_de(tabJoueur[1],de2,de1);
         egaliser_de(tabJoueur[2],de3,de2);
-    }else{
+    }else
+    {
         egaliser_de(tabJoueur[0],de1,de2);
         egaliser_de(tabJoueur[1],de2,de3);
         egaliser_de(tabJoueur[2],de3,de1);    
@@ -460,7 +565,7 @@ void echange_de(TJoueur tabJoueur[]){
 
 // Procédure qui prend un dé du joueur1 pour le donner au joueur2
 void donner_de (TJoueur joueur1, TJoueur joueur2){
-    supprimer_de(joueur1);
+//    supprimer_de(joueur1);
     nouveau_de(joueur2);
 }
 
@@ -468,10 +573,12 @@ void donner_de (TJoueur joueur1, TJoueur joueur2){
 void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau){
     int nbDeAct = nbDeDeb;
     while (nbDeAct != nbDeNouveau){
-        if(nbDeAct>nbDeNouveau){
+        if(nbDeAct>nbDeNouveau)
+        {
             //supprimer_de(leJoueur);
             nbDeAct = nbDeAct -1;
-        }else{
+        }else
+        {
             nouveau_de(leJoueur);
             nbDeAct = nbDeAct +1;
         }
@@ -579,26 +686,38 @@ TJoueur saisir_joueur(TJoueur joueurActuelle, TJoueur tabJoueur[3])
 void tour_suivant(TJoueur leJoueur,bool sens, TJoueur tabJoueur[]){
     leJoueur.joue = false;
 
-    if(sens){
-        if(leJoueur.id == 1){
+    if(sens)
+    {
+        if(leJoueur.id == 1)
+        {
             leJoueur=tabJoueur[2];
-        }else{
-            if(leJoueur.id == 2){
+        }else
+        {
+            if(leJoueur.id == 2)
+            {
                 leJoueur = tabJoueur[3];
-            }else{
-                if(leJoueur.id == 3){
+            }else
+            {
+                if(leJoueur.id == 3)
+                {
                     leJoueur = tabJoueur[1];
                 }
             }
         }     
-    }else{
-        if(leJoueur.id == 1){
+    }else
+    {
+        if(leJoueur.id == 1)
+        {
             leJoueur=tabJoueur[3];
-        }else{
-            if(leJoueur.id == 2){
+        }else
+        {
+            if(leJoueur.id == 2)
+            {
                 leJoueur = tabJoueur[1];
-            }else{
-                if(leJoueur.id == 3){
+            }else
+            {
+                if(leJoueur.id == 3)
+                {
                     leJoueur = tabJoueur[2];
                 }
             }
@@ -612,7 +731,7 @@ void tour_suivant(TJoueur leJoueur,bool sens, TJoueur tabJoueur[]){
 int nombre_aleatoire(int min, int max){
     int nbMystere;
 
-    nbMystere = (rand() % (max-min - 1)) + min;
+    nbMystere = (rand() % (max-min)) + min;
 
     return nbMystere;
 }
