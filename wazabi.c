@@ -74,6 +74,8 @@ int nombre_des(TJoueur * leJoueur); // Fonction qui retourne le nombre de dés d
 void donner_de (TJoueur joueur1, TJoueur joueur2); // Procédure qui prend un dé du joueur1 pour le donner au joueur2
 void supprimer_de(TJoueur joueur); // Procédure qui supprime le dé d'un joueur
 int nb_wazabi(TJoueur joueur); //Fonction qui retourne le nombre de wazabi d'un joueur
+int nb_donnerDe(TJoueur joueur); //Fonction qui retourne le nombre de donneDe d'un joueur 
+int nb_occurrenceDe(TJoueur joueur, int idDe); // Fonction qui retourne le nombre d'occurrence d'un dé selon son identifiant
 
 TJoueur saisir_joueur(TJoueur joueurActuelle, TJoueur tabJoueur[3]);//Fonction qui va demander au joueur actuel, quel joueur séléctionner
 void tour_suivant( TJoueur leJoueur,bool sens, TJoueur tabCarte[]); //procédure qui va changer le joueur actuel
@@ -189,7 +191,6 @@ void init_pioche(TPioche * pioche, TPioche * defausse){
 void init_de(TJoueur * leJoueur){
     for(int i =0; i<4;i++)
     {
-
         nouveau_de(leJoueur);
     }
 }
@@ -496,20 +497,68 @@ int nombre_carte(TJoueur * leJoueur){
     return nbCarte;
 }
 // Fonction qui va, selon l’état actuel de la partie, déterminer si la carte peut être utilisée en fonction du nb de wazabi. Renvoie vrai si elle peut être utilisé, faux sinon
-bool carte_utilisable(DefCarte * laCarte, TJoueur joueur)
+bool carte_utilisable(DefCarte tabCarte[], int idCarte,TJoueur tabJoueur[], TJoueur joueurActuelle)
 {
     bool utilisable = false;
     int nbWazabiJoueur;
 
-    nbWazabiJoueur = nb_wazabi(joueur);    
-    if((*laCarte).nbWasabi <= nbWazabiJoueur)
+    nbWazabiJoueur = nb_wazabi(joueurActuelle);    
+    if(tabCarte[idCarte].nbWasabi <= nbWazabiJoueur)
     {
-        utilisable = true;
+        int nbDonneDe = nb_donnerDe(joueurActuelle);
+        if(idCarte == 0 && nbDonneDe < 2)
+        {
+            utilisable = true;
+        }
+        else if(idCarte == 5)
+        {
+            //Test combien de joueur on 2 cartes ou plus
+            int nbCarte2OuPlus = 0;
+            for(int i = 0; i < 3; i++)
+            {
+                int nbCarteJoueur = nombre_carte(&tabJoueur[i]);
+                if(nbCarteJoueur >= 2)
+                {
+                    nbCarte2OuPlus = nbCarte2OuPlus + 1;
+                }         
+            } 
+            int nbCarteJoueurActuelle = nombre_carte(&joueurActuelle);
+            if(nbCarte2OuPlus > 1)
+            {
+                utilisable = true;
+            } 
+            else if(nbCarte2OuPlus == 1 && nbCarteJoueurActuelle < 2)
+            {
+                utilisable = true;
+            }  
+        }     
+        else if(idCarte == 7)
+        {
+            //Test combien de joueur on 3 cartes ou plus
+            int nbCarte3OuPlus = 0;
+            for(int i = 0; i < 3; i++)
+            {
+                int nbCarteJoueur = nombre_carte(&tabJoueur[i]);
+                if(nbCarteJoueur >= 3)
+                {
+                    nbCarte3OuPlus = nbCarte3OuPlus + 1;
+                }         
+            } 
+            int nbCarteJoueurActuelle = nombre_carte(&joueurActuelle);
+            if(nbCarte3OuPlus > 1)
+            {
+                utilisable = true;
+            } 
+            else if(nbCarte3OuPlus == 1 && nbCarteJoueurActuelle < 3)
+            {
+                utilisable = true;
+            }  
+        }
     }
     return utilisable;
 }
 // Procédure permettant de jouer une carte parmis le deck d’un joueur et d’utiliser son effet 
-void utiliser_carte(TJoueur joueur, int carte)
+/*void utiliser_carte(TJoueur joueur, int carte)
 {
     TCarte * aux;
 
@@ -520,7 +569,7 @@ void utiliser_carte(TJoueur joueur, int carte)
     }
     
     
-}
+}*/
 
 // ***************************************************************************************************************************************************************
 // Procédure / fonctions dés
@@ -595,7 +644,6 @@ int nombre_des(TJoueur * leJoueur){
     }
     else
     {
-
         while(aux != NULL)
         {
 
@@ -619,21 +667,39 @@ void supprimer_de(TJoueur joueur)
 //Fonction qui retourne le nombre de wazabi d'un joueur
 int nb_wazabi(TJoueur joueur)
 {
-    TDe * aux;
     int nbWazabi = 0;
+
+    nbWazabi = nb_occurrenceDe(joueur,3);
+
+    return nbWazabi;
+} 
+//Fonction qui retourne le nombre de donneDe d'un joueur 
+int nb_donnerDe(TJoueur joueur)
+{
+    int nbDonneDe = 0;
+
+    nbDonneDe = nb_occurrenceDe(joueur,1);
+
+    return nb_donnerDe;
+}
+// Fonction qui retourne le nombre d'occurrence d'un dé selon son identifiant
+int nb_occurrenceDe(TJoueur joueur, int idDe)
+{
+    TDe * aux;
+    int nbOccurrence = 0;
 
     aux = joueur.des;
 
     while (aux != NULL)
     {
-        if((*aux).valeur == 3)
+        if((*aux).valeur == idDe)
         {
-            nbWazabi = nbWazabi + 1;
+            nbOccurrence = nbOccurrence + 1;
         }
         aux = (*aux).deSuivant;
     }
-    return nbWazabi;
-} 
+    return nbOccurrence;
+}
 // ***************************************************************************************************************************************************************
 // Procédure / fonctions déroulement de la partie
 // ***************************************************************************************************************************************************************
