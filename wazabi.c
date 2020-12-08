@@ -53,7 +53,6 @@ void init_pioche(TPioche * pioche,TPioche * defausse); // Initialisation de la p
 void init_de(TJoueur leJoueur);// Procédure qui va donner 4 dés à un joueur
 void nouveau_de(TJoueur * joueur); // Procédure qui ajoute un dé à un joueur
 TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse); //Procédure qui ajoute un joueur à la liste des joueurs  
-
 TJoueur debut_partie(TJoueur tabJoueur[3]); // Procédure où chaque joueur va lancer ses dés pour savoir qui est celui qui va débuter le jeu et connaître le sens du jeu
 
 void afficher_joueur(TJoueur joueur); // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
@@ -66,7 +65,7 @@ void defausser_carte(TCarte * laCarte, TJoueur leJoueur, TPioche * defausse);// 
 void melanger_carte(TPioche * laPioche, TPioche * laDefausse);//prend les cartes de la défausse pour les mettre dans la pioche de façon aléatoire
 int nombre_carte(TJoueur * leJoueur); //Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 bool carte_utilisable(DefCarte * laCarte, TJoueur joueur); // Fonction qui va, selon l’état actuel de la partie, déterminer si la carte peut être utilisée en fonction du nb de wazabi. Renvoie vrai si elle peut être utilisé, faux sinon
-
+void utiliser_carte(TJoueur joueur, int carte); // Procédure permettant de jouer une carte parmis le deck d’un joueur et d’utiliser son effet 
 
 void lancer_des(TJoueur joueur); // Procédure qui va changer la valeur des dés d’un joueur, 1 pour le dé  “donner dé” , 2 pour le dé “piocher carte”, 3 pour le dé “Wasabi”
 void echange_de(TJoueur tabJoueur[]);// Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
@@ -226,7 +225,6 @@ void nouveau_de(TJoueur * joueur){
         {
             aux=(*aux).deSuivant;
         }
-
         (*aux).deSuivant=newDe;
     }
     
@@ -502,7 +500,6 @@ void melanger_carte(TPioche * laPioche, TPioche * laDefausse){
     }
 
 }
-
 //Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 int nombre_carte(TJoueur * leJoueur){
     int nbCarte; //Nombre de carte 
@@ -543,6 +540,19 @@ bool carte_utilisable(DefCarte * laCarte, TJoueur joueur)
         utilisable = true;
     }
     return utilisable;
+}
+// Procédure permettant de jouer une carte parmis le deck d’un joueur et d’utiliser son effet 
+void utiliser_carte(TJoueur joueur, int carte)
+{
+    TCarte * aux;
+
+    aux = joueur.cartes;
+    while (aux != NULL)
+    {
+        //afficher_carte_utilisable();
+    }
+    
+    
 }
 
 // ***************************************************************************************************************************************************************
