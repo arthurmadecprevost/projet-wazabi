@@ -60,6 +60,7 @@ void afficher_joueur(TJoueur joueur); // Procédure qui affiche le nombre de dé
 void afficher_les_joueurs(TJoueur tabJoueur[]);//procédure qui afficher tous les joueurs à l'écran
 void afficher_lancer(TJoueur leJoueur);// procédure qui affiche les dés d'un joueur
 void afficher_carte(int idCarte, DefCarte tabCarte[10]); //procédure qui affiche une carte
+void afficher_cartes_utilisables(TJoueur * leJoueur, DefCarte tabCarte[10]); // Procédure qui affiche les cartes utilisables par le joueur passé en paramètre
 
 void piocher_carte(TJoueur * leJoueur, TPioche * pioche,TPioche * defausse); //Procédure qui va prendre un numéro dans la pioche, créer la carte et la mettre dans le deck des joueurs
 void defausser_carte(TCarte * laCarte, TJoueur leJoueur, TPioche * defausse);// procédure qui va mettre une carte de la main d'un joueur dans la defausse 
@@ -334,6 +335,20 @@ void afficher_carte(int idCarte, DefCarte tabCarte[10]){
     printf("Nombre de wasabi : %d, %s ",tabCarte[idCarte-1].nbWasabi,tabCarte[idCarte-1].libelle);
 }
 
+// Procédure qui affiche les cartes utilisables par le joueur passé en paramètre
+void afficher_cartes_utilisables(TJoueur * leJoueur, DefCarte tabCarte[10]){
+    TCarte * aux;
+    aux = (*leJoueur).cartes ;
+    
+    while(aux != NULL)
+    {
+        if(carte_utilisable(aux, (*leJoueur)){
+            afficher_carte((*aux).identifiant, tabCarte);
+        }
+        aux = (*aux).carteSuivante;
+    }
+}
+
 
 // ***************************************************************************************************************************************************************
 // Procédure / fonctions cartes
@@ -498,6 +513,7 @@ int nombre_carte(TJoueur * leJoueur){
 
     return nbCarte;
 }
+
 // Fonction qui va, selon l’état actuel de la partie, déterminer si la carte peut être utilisée en fonction du nb de wazabi. Renvoie vrai si elle peut être utilisé, faux sinon
 bool carte_utilisable(DefCarte * laCarte, TJoueur joueur)
 {
