@@ -82,7 +82,7 @@ void tour_suivant( TJoueur leJoueur,bool sens, TJoueur tabCarte[]); //procédure
 int nombre_aleatoire(int min, int max);
 int saisir_entre(int min, int max); 
 void space(); //fonction qui va faire un \n
-
+void choix_carteUtilisables(TJoueur * joueur, DefCarte tabCarte[10]); // Procédure qui va demander au joueur quelle carte choisir parmis ses cartes utilisables
 
 // **********************
 //  programme principal
@@ -343,12 +343,12 @@ void afficher_cartes_utilisables(TJoueur * leJoueur, DefCarte tabCarte[10]){
     while(aux != NULL)
     {
         if(carte_utilisable(aux, (*leJoueur)){
+            printf("Carte n°1:\n");
             afficher_carte((*aux).identifiant, tabCarte);
         }
         aux = (*aux).carteSuivante;
     }
 }
-
 
 // ***************************************************************************************************************************************************************
 // Procédure / fonctions cartes
@@ -758,3 +758,10 @@ int saisir_entre(int min, int max){
 void space(){
     printf("\n");
 }
+
+// Procédure qui va demander au joueur quelle carte choisir parmis ses cartes utilisables
+void choix_carteUtilisables(TJoueur * joueur, DefCarte tabCarte[10]){
+    afficher_cartes_utilisables(joueur, tabCarte);
+    printf("Merci de choisir une carte:\n");
+    choix = saisir_entre()
+} // Retourner une carte?
