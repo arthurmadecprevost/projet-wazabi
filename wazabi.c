@@ -698,8 +698,7 @@ void echange_de(TJoueur tabJoueur[]){
     int de2 = nombre_des(&tabJoueur[1]);
     int de3 = nombre_des(&tabJoueur[2]);
 
-    if(sens
-    ){
+    if(sens){
         egaliser_de(tabJoueur[0],de1,de3);
         egaliser_de(tabJoueur[1],de2,de1);
         egaliser_de(tabJoueur[2],de3,de2);
