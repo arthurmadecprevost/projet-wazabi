@@ -74,12 +74,13 @@ void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui 
 int nombre_des(TJoueur * leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
 void donner_de (TJoueur joueur1, TJoueur joueur2); // Procédure qui prend un dé du joueur1 pour le donner au joueur2
 void supprimer_de(TJoueur joueur); // Procédure qui supprime le dé d'un joueur
-int nb_wazabi(TJoueur joueur); //Fonction qui retourne le nombre de wazabi d'un joueur
+int nb_wazabi(TJoueur * joueur); //Fonction qui retourne le nombre de wazabi d'un joueur
 
 TJoueur saisir_joueur(TJoueur joueurActuelle, TJoueur tabJoueur[3]);//Fonction qui va demander au joueur actuel, quel joueur séléctionner
 void tour_suivant( TJoueur leJoueur,bool sens, TJoueur tabCarte[]); //procédure qui va changer le joueur actuel
 int nombre_aleatoire(int min, int max);
 int saisir_entre(int min, int max); 
+int saisir_suivant(); //fonction qui demande à l'utilisateur de rentrer "1" pour passer a l'action suivante
 void space(); //fonction qui va faire un \n
 
 
@@ -89,7 +90,7 @@ void space(); //fonction qui va faire un \n
 int main ()
 {
     TJoueur tabJoueur[3];
-
+    TJoueur joueurActuel;
     TPioche * defausse; 
     TPioche * pioche;  
     defausse = (TPioche*) malloc (sizeof(TPioche)); 
@@ -107,6 +108,11 @@ int main ()
 
     afficher_les_joueurs(tabJoueur);
 
+    do
+    {
+        joueurActuel = debut_partie(tabJoueur);
+    }while(!joueurActuel.joue);
+    
     
     return 0;
 }
@@ -257,22 +263,62 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse){
 // Procédure où chaque joueur va lancer ses dés pour savoir qui est celui qui va débuter le jeu et connaître le sens du jeu
 TJoueur debut_partie(TJoueur tabJoueur[3])
 {
-    int nbWazabi;
+    TJoueur joueurActuel;
+    int nbWazabi=0;
     int nbWazabiMax = 0;
-    TJoueur joueurActuelle;
+    bool egalite = false;
 
     for(int i = 0; i < 3; i++)
     {
+        space();
+        printf("Joueur %d : %s, veuillez lancer vos dés (1 pour suivant)\n", i+1, &tabJoueur[i].pseudo);
+        saisir_suivant();
+        
         lancer_des(tabJoueur[i]);
-        nbWazabi = nb_wazabi(tabJoueur[i]);
+        nbWazabi=nb_wazabi(&tabJoueur[i]);
 
-        if(nbWazabi > nbWazabiMax)
-        {
-            nbWazabiMax = nbWazabi;
-            joueurActuelle = tabJoueur[i];
+        printf("Joueur %d : %s a obtenue %d wazabis(1 pour suivant)\n", i+1, &tabJoueur[i].pseudo,nbWazabi );
+        saisir_suivant();
+        
+
+        space();
+
+        if(nbWazabi >= nbWazabiMax)  
+        {    
+            joueurActuel = tabJoueur[i];
+            if(nbWazabi == nbWazabiMax)
+            {
+                if(i==2)
+                {
+                    egalite=true;
+                }else{
+                    if(i==1)
+                    {
+                        egalite = true;
+                    }
+                }
+            }else
+            {
+                nbWazabiMax=nbWazabi;
+                if(i==2)
+                {
+                    egalite=false;
+                }
+            }
         }
+        
     }  
-    return joueurActuelle;
+    
+    if(egalite)
+    {
+        printf("Egalite, veuillez recommencer\n");
+    }else
+    {
+        joueurActuel.joue=true;
+        printf("Le joueur %d : %s va debuter la partie\n", joueurActuel.id, joueurActuel.pseudo);
+    }
+
+    return joueurActuel;
 }
 
 // ***************************************************************************************************************************************************************
@@ -499,12 +545,12 @@ int nombre_carte(TJoueur * leJoueur){
     return nbCarte;
 }
 // Fonction qui va, selon l’état actuel de la partie, déterminer si la carte peut être utilisée en fonction du nb de wazabi. Renvoie vrai si elle peut être utilisé, faux sinon
-bool carte_utilisable(DefCarte * laCarte, TJoueur joueur)
+bool carte_utilisable(DefCarte * laCarte, TJoueur tabJoueur)
 {
     bool utilisable = false;
     int nbWazabiJoueur;
 
-    nbWazabiJoueur = nb_wazabi(joueur);    
+    //nbWazabiJoueur = nb_wazabi(joueur);    
     if((*laCarte).nbWasabi <= nbWazabiJoueur)
     {
         utilisable = true;
@@ -607,12 +653,12 @@ void supprimer_de(TJoueur joueur)
     free(aux);
 }
 //Fonction qui retourne le nombre de wazabi d'un joueur
-int nb_wazabi(TJoueur joueur)
+int nb_wazabi(TJoueur * joueur)
 {
     TDe * aux;
     int nbWazabi = 0;
 
-    aux = joueur.des;
+    aux = (*joueur).des;
 
     while (aux != NULL)
     {
@@ -723,7 +769,7 @@ void tour_suivant(TJoueur leJoueur,bool sens, TJoueur tabJoueur[]){
 int nombre_aleatoire(int min, int max){
     int nbMystere;
 
-    nbMystere = (rand() % (max-min)) + min;
+    nbMystere = (rand() % (max-min+1)) + min;
 
     return nbMystere;
 }
@@ -735,6 +781,17 @@ int saisir_entre(int min, int max){
         printf("Veuillez saisir un chiffre entre %d et %d : \n", min, max);
         scanf("%d", &choix);
     }while(choix<min || choix>max);
+
+    return choix;
+}
+
+// fonction pour saisir un nombre entre min et max
+int saisir_suivant(){
+ 	int choix=1;
+    do{
+        printf("1 pour suivant\n");
+        scanf("%d", &choix);
+    }while(choix !=1);
 
     return choix;
 }
