@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+
 //#include "carte.h"
 //#include "init.c"
 //#include "de.h"
@@ -11,6 +12,7 @@
 // ************************************
 // definition des types : liste chainee 
 // ************************************
+
 typedef struct _TCarte
 {
     int identifiant;
@@ -73,13 +75,14 @@ void utiliser_carte(TJoueur joueurActuel, int carte, TJoueur tabJoueur[],TPioche
 void lancer_des(TJoueur joueur); // Procédure qui va changer la valeur des dés d’un joueur, 1 pour le dé  “donner dé” , 2 pour le dé “piocher carte”, 3 pour le dé “Wasabi”
 void echange_de(TJoueur tabJoueur[]);// Procédure qui va demander au joueur dans quel sens tourner les dés et ensuite faire l’échange des dés entre les joueurs
 void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau);//Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
-int nombre_des(TJoueur * leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
-void donner_de (TJoueur joueur1, TJoueur joueur2); // Procédure qui prend un dé du joueur1 pour le donner au joueur2
+int nombre_des(TJoueur leJoueur); // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
+void donner_de (TJoueur * joueur1, TJoueur * joueur2); // Procédure qui prend un dé du joueur1 pour le donner au joueur2
 void supprimer_de(TJoueur * joueur); // Procédure qui supprime le dé d'un joueur
 
 int nb_wazabi(TJoueur joueur); //Fonction qui retourne le nombre de wazabi d'un joueur
+int nb_piocherCarte(TJoueur joueur) ; //Fonction qui retourne le nombre de dé piocher carte d'un joueur
 int nb_donnerDe(TJoueur joueur); //Fonction qui retourne le nombre de donneDe d'un joueur 
-int nb_occurrenceDe(TJoueur joueur, int idDe); // Fonction qui retourne le nombre d'occurrence d'un dé selon son identifiant
+int nb_occurrenceDe(TJoueur * joueur, int idDe); // Fonction qui retourne le nombre d'occurrence d'un dé selon son identifiant
 
 TJoueur saisir_joueur(TJoueur joueurActuel, TJoueur tabJoueur[3]);//Fonction qui va demander au joueur actuel, quel joueur séléctionner
 void tour_suivant( TJoueur * leJoueur,bool * sens, TJoueur tabJoueur[], DefCarte tabCarte[]); //procédure qui va changer le joueur actuel
@@ -112,7 +115,9 @@ int main ()
         joueurActuel=debut_partie(tabJoueur);
     
     }while(!joueurActuel.joue);
-   
+    
+    //supprimer_de(&joueurActuel);
+    //donner_de(&tabJoueur[0],&tabJoueur[1]);
     do{
         tour_suivant(&joueurActuel, &sensAntiHoraire, tabJoueur, tabCarte);
     }while(!gagner);
@@ -227,7 +232,9 @@ void nouveau_de(TJoueur * joueur){
         }
         (*aux).deSuivant=newDe;
     }
+
 }
+
 
 //Procédure qui ajoute un joueur à la partie
 TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse){ 
@@ -236,6 +243,7 @@ TJoueur nouveauJoueur(int numJoueur, TPioche * pioche, TPioche * defausse){
     joueur.des=NULL;
     joueur.id = numJoueur;
     joueur.nbCartePrison = 0;
+
     printf("Joueur n°%d veuillez saisir votre pseudo ? \n", numJoueur + 1);
     scanf(" %s", joueur.pseudo);
     joueur.pseudo[24]= "\0";
@@ -318,10 +326,9 @@ TJoueur debut_partie(TJoueur tabJoueur[3])
 
 // Procédure qui affiche le nombre de dés ainsi que le nombre de cartes d’un joueur
 void afficher_joueur(TJoueur joueur){
-    int i;
     printf("Joueur n° %d Pseudo: %s\n", joueur.id+1, &joueur.pseudo);
     int nbCartes = nombre_carte(&joueur);
-    int nbDes = nombre_des(&joueur);
+    int nbDes = nombre_des(joueur);
     printf("Nombre de cartes: %d \n", nbCartes);
     printf("Nombre de dés: %d \n", nbDes);
 }
@@ -338,7 +345,7 @@ void afficher_les_joueurs(TJoueur tabJoueur[]){
 // procédure qui affiche les dés d'un joueur
 void afficher_lancer(TJoueur leJoueur){
     TDe * aux;
-    aux = (TDe*) malloc(sizeof(TDe));
+    //aux = (TDe*) malloc(sizeof(TDe));
     int valeurDe;
 
     printf("Voici vos dés : ");
@@ -349,13 +356,13 @@ void afficher_lancer(TJoueur leJoueur){
         switch (valeurDe)
         {
         case 1:
-            printf("Wasabi");
-            break;
-        case 2:
             printf("Donner dé");
             break;
-        case 3:
+        case 2:
             printf("Piocher carte");
+            break;
+        case 3:
+            printf("Wasabi");
             break;
         default:
             break;
@@ -637,7 +644,7 @@ void utiliser_carte(TJoueur joueurActuel, int carte, TJoueur tabJoueur[],TPioche
     switch(carte)
     {
         case 0: 
-            supprimer_de(joueur);
+            supprimer_de(&joueur);
         break;
         case 1:
             echange_de(tabJoueur);
@@ -647,7 +654,7 @@ void utiliser_carte(TJoueur joueurActuel, int carte, TJoueur tabJoueur[],TPioche
             supprimer_de(&joueurActuel);
         break;
         case 3:
-            donner_de(joueurActuel,joueur);
+            donner_de(&joueurActuel,&joueur);
         break;
         case 4:
             //piocher_carte_deck()
@@ -694,9 +701,9 @@ void echange_de(TJoueur tabJoueur[]){
 
     printf("Dans quelle sens voulez vous tournez les dés ? (0 pour sens horaire, 1 pour sens anti horaire)\n ");
     int sens = saisir_entre(0,1);
-    int de1 = nombre_des(&tabJoueur[0]);
-    int de2 = nombre_des(&tabJoueur[1]);
-    int de3 = nombre_des(&tabJoueur[2]);
+    int de1 = nombre_des(tabJoueur[0]);
+    int de2 = nombre_des(tabJoueur[1]);
+    int de3 = nombre_des(tabJoueur[2]);
 
     if(sens){
         egaliser_de(tabJoueur[0],de1,de3);
@@ -711,9 +718,9 @@ void echange_de(TJoueur tabJoueur[]){
 }
 
 // Procédure qui prend un dé du joueur1 pour le donner au joueur2
-void donner_de (TJoueur joueur1, TJoueur joueur2){
-    supprimer_de(&joueur1);
-    nouveau_de(&joueur2);
+void donner_de (TJoueur * joueur1, TJoueur * joueur2){
+    supprimer_de(joueur1);
+    nouveau_de(joueur2);
 }
 
 //Procédure qui va faire en sorte que le joueur ai un certains nombre de dé
@@ -733,22 +740,16 @@ void egaliser_de(TJoueur leJoueur,int nbDeDeb,int nbDeNouveau){
 }
 
 // Fonction qui retourne le nombre de dés du joueur passé en paramètre.
-int nombre_des(TJoueur * leJoueur){
+int nombre_des(TJoueur leJoueur){
 
     TDe * aux;
-    aux = (*leJoueur).des;
+    aux = leJoueur.des;
     int nbDes = 0;
 
-    if(aux == NULL)
-    {
-        return nbDes;
-
-    }
-    else
-    {
+    if(aux != NULL)
+    { 
         while(aux != NULL)
         {
-
             nbDes = nbDes + 1;
             aux = (*aux).deSuivant;
         }
@@ -761,9 +762,11 @@ int nombre_des(TJoueur * leJoueur){
 void supprimer_de(TJoueur * joueur)
 {
     TDe * aux;
+    
 
     aux = (*joueur).des;
     (*joueur).des = (*aux).deSuivant;
+    (*aux).deSuivant = NULL;
 
     free(aux);
 }
@@ -773,27 +776,39 @@ int nb_wazabi(TJoueur joueur)
 {
     int nbWazabi = 0;
 
-    nbWazabi = nb_occurrenceDe(joueur,3);
+    nbWazabi = nb_occurrenceDe(&joueur,3);
 
     return nbWazabi;
 } 
+
+//Fonction qui retourne le nombre de dé piocher carte d'un joueur 
+int nb_piocherCarte(TJoueur joueur)
+{
+    int nbPiocherCarte = 0;
+
+    nbPiocherCarte = nb_occurrenceDe(&joueur,2);
+
+    return nbPiocherCarte;
+}
 
 //Fonction qui retourne le nombre de donneDe d'un joueur 
 int nb_donnerDe(TJoueur joueur)
 {
     int nbDonneDe = 0;
 
-    nbDonneDe = nb_occurrenceDe(joueur,1);
-
-    return nb_donnerDe;
+    nbDonneDe = nb_occurrenceDe(&joueur,1);
+    
+    return nbDonneDe;
 }
+
+
 // Fonction qui retourne le nombre d'occurrence d'un dé selon son identifiant
-int nb_occurrenceDe(TJoueur joueur, int idDe)
+int nb_occurrenceDe(TJoueur * joueur, int idDe)
 {
     TDe * aux;
     int nbOccurrence = 0;
 
-    aux = joueur.des;
+    aux = (*joueur).des;
 
     while (aux != NULL)
     {
@@ -837,12 +852,12 @@ TJoueur saisir_joueur(TJoueur joueurActuel, TJoueur tabJoueur[3])
     {
         printf("Veuillez saisir un joueur (autre que vous même) \n");
         printf("1 - "); 
-        //afficher_joueur(joueur1);
+        afficher_joueur(joueur1);
         printf("2 - "); 
-        //afficher_joueur(joueur2);
-        scanf(" %d", nb);
+        afficher_joueur(joueur2);
+        scanf("%d", &nb);
     } while (nb > 2 || nb < 1);
-   
+
     switch(nb)
     {
         case 1:
@@ -851,25 +866,63 @@ TJoueur saisir_joueur(TJoueur joueurActuel, TJoueur tabJoueur[3])
         case 2:
             joueurSelect = joueur2;
         break;
+        default:
+            break;
     }
 
+    printf("(return %s)\n",joueurSelect.pseudo);
     return joueurSelect;    
 }
 
-//procédure qui va changer le joueur actuel
+//procédure du deroulement d'un tour
 void tour_suivant(TJoueur * leJoueur,bool * sens, TJoueur tabJoueur[], DefCarte tabCarte[]){
     printf("====================================Tour du joueur %d: %s ====================================\n\n", (*leJoueur).id+1, (*leJoueur).pseudo);
 
     afficher_les_joueurs(tabJoueur);
-    printf("Vos cartes :\n");
+    space();
+    printf("Vos cartes :\n\n");
     afficher_cartes_joueur((leJoueur),tabCarte);
     space();
 
-    printf("Veuillez lancer vos dés\n");
-    saisir_suivant();
-    lancer_des((*leJoueur));
-    afficher_lancer((*leJoueur));
-    saisir_suivant();
+    if((*leJoueur).nbCartePrison==0)
+    {
+        int nbDonnerDe=0;
+        int nbPiocherCarte=0;
+        int nbWasabi=0;
+        TJoueur * cible;
+        cible = (TJoueur*) malloc (sizeof(TJoueur)); 
+
+        printf("Veuillez lancer vos dés\n");
+        saisir_suivant();
+        lancer_des((*leJoueur));
+        nbDonnerDe = nb_donnerDe((*leJoueur));
+        nbPiocherCarte = nb_piocherCarte((*leJoueur));
+        nbWasabi = nb_wazabi((*leJoueur));
+        afficher_lancer((*leJoueur));
+        saisir_suivant();
+
+        if(nbDonnerDe>0)
+        {
+            for(int i=0;i<nbDonnerDe;i++)
+            {
+                (*cible) = saisir_joueur((*leJoueur),tabJoueur);
+                donner_de(leJoueur,cible);
+                tabJoueur[(*leJoueur).id]=(*leJoueur);
+                tabJoueur[(*cible).id]=(*cible);
+            }
+
+
+        }
+
+        free(cible);
+
+    }else
+    {
+        printf("Vous passez votre tour ! \n");
+        (*leJoueur).nbCartePrison = (*leJoueur).nbCartePrison-1;
+    }
+
+
     // determine le joueur suivant
     (*leJoueur).joue = false;
 
@@ -877,7 +930,7 @@ void tour_suivant(TJoueur * leJoueur,bool * sens, TJoueur tabJoueur[], DefCarte 
     {
         if((*leJoueur).id == 0)
         {
-            (*leJoueur)=tabJoueur[1];
+            (*leJoueur)= tabJoueur[1];
         }else
         {
             if((*leJoueur).id == 1)
@@ -910,8 +963,10 @@ void tour_suivant(TJoueur * leJoueur,bool * sens, TJoueur tabJoueur[], DefCarte 
             }
         }   
     }
-
+   
     (*leJoueur).joue=true;
+    printf("Fin de votre tour\n");
+    saisir_suivant();
 }
 
 // fonction qui retourne un nombre aléatoire compris entre deux nombres
